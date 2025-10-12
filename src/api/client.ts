@@ -1,5 +1,6 @@
+import { clearSession, getAccessToken } from '../auth/session'
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? 'https://api.etin.dev/v1'
-const API_AUTH_KEY = import.meta.env.VITE_API_AUTH_KEY
 
 export class ApiError extends Error {
   public readonly status: number
@@ -24,8 +25,9 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
     headers.set('Content-Type', 'application/json')
   }
 
-  if (API_AUTH_KEY && !headers.has('Authorization')) {
-    headers.set('Authorization', `Bearer ${API_AUTH_KEY}`)
+  const token = getAccessToken()
+  if (token && !headers.has('Authorization')) {
+    headers.set('Authorization', `Bearer ${token}`)
   }
 
   const response = await fetch(`${API_BASE_URL}${path}`, {
@@ -52,6 +54,10 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
       } catch (error) {
         // Ignore text parsing errors and fall back to status text.
       }
+    }
+
+    if (response.status === 401) {
+      clearSession()
     }
 
     throw new ApiError(response.status, message)

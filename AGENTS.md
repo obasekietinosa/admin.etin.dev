@@ -15,6 +15,7 @@ Welcome to the admin.etin.dev project. This repository hosts the admin interface
 - Keep TypeScript types strict and prefer explicit interfaces/types for API contracts.
 - Ensure build tooling and scripts are Vite-compatible.
 - Include automated or manual testing notes in PR descriptions when relevant.
+- Reference the API specification at https://api.etin.dev/swagger when building or updating API integrations.
 
 ## Commit Messages
 - Every commit message must include the exact prompt that triggered the change.

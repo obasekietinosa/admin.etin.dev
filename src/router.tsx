@@ -1,5 +1,7 @@
 import { createBrowserRouter } from 'react-router-dom'
 import App from './App'
+import RequireAuth from './auth/RequireAuth'
+import LoginPage from './routes/LoginPage'
 import HomePage from './routes/HomePage'
 import AboutPage from './routes/AboutPage'
 import NotFoundPage from './routes/NotFoundPage'
@@ -16,64 +18,73 @@ import EditRolePage from './routes/roles/EditRolePage'
 
 export const router = createBrowserRouter([
   {
+    path: '/login',
+    element: <LoginPage />,
+  },
+  {
     path: '/',
-    element: <App />,
+    element: <RequireAuth />,
     children: [
       {
-        index: true,
-        element: <HomePage />,
-      },
-      {
-        path: 'about',
-        element: <AboutPage />,
-      },
-      {
-        path: 'companies',
-        element: <CompaniesLayout />,
+        element: <App />,
         children: [
           {
             index: true,
-            element: <CompaniesListPage />,
+            element: <HomePage />,
           },
           {
-            path: 'new',
-            element: <CreateCompanyPage />,
+            path: 'about',
+            element: <AboutPage />,
           },
           {
-            path: ':companyId',
-            element: <CompanyDetailPage />,
+            path: 'companies',
+            element: <CompaniesLayout />,
+            children: [
+              {
+                index: true,
+                element: <CompaniesListPage />,
+              },
+              {
+                path: 'new',
+                element: <CreateCompanyPage />,
+              },
+              {
+                path: ':companyId',
+                element: <CompanyDetailPage />,
+              },
+              {
+                path: ':companyId/edit',
+                element: <EditCompanyPage />,
+              },
+            ],
           },
           {
-            path: ':companyId/edit',
-            element: <EditCompanyPage />,
+            path: 'roles',
+            element: <RolesLayout />,
+            children: [
+              {
+                index: true,
+                element: <RolesListPage />,
+              },
+              {
+                path: 'new',
+                element: <CreateRolePage />,
+              },
+              {
+                path: ':roleId',
+                element: <RoleDetailPage />,
+              },
+              {
+                path: ':roleId/edit',
+                element: <EditRolePage />,
+              },
+            ],
+          },
+          {
+            path: '*',
+            element: <NotFoundPage />,
           },
         ],
-      },
-      {
-        path: 'roles',
-        element: <RolesLayout />,
-        children: [
-          {
-            index: true,
-            element: <RolesListPage />,
-          },
-          {
-            path: 'new',
-            element: <CreateRolePage />,
-          },
-          {
-            path: ':roleId',
-            element: <RoleDetailPage />,
-          },
-          {
-            path: ':roleId/edit',
-            element: <EditRolePage />,
-          },
-        ],
-      },
-      {
-        path: '*',
-        element: <NotFoundPage />,
       },
     ],
   },
