@@ -8,6 +8,11 @@ import CompaniesListPage from './routes/companies/CompaniesListPage'
 import CreateCompanyPage from './routes/companies/CreateCompanyPage'
 import CompanyDetailPage from './routes/companies/CompanyDetailPage'
 import EditCompanyPage from './routes/companies/EditCompanyPage'
+import RolesLayout from './routes/roles/RolesLayout'
+import RolesListPage from './routes/roles/RolesListPage'
+import CreateRolePage from './routes/roles/CreateRolePage'
+import RoleDetailPage from './routes/roles/RoleDetailPage'
+import EditRolePage from './routes/roles/EditRolePage'
 
 export const router = createBrowserRouter([
   {
@@ -41,6 +46,28 @@ export const router = createBrowserRouter([
           {
             path: ':companyId/edit',
             element: <EditCompanyPage />,
+          },
+        ],
+      },
+      {
+        path: 'roles',
+        element: <RolesLayout />,
+        children: [
+          {
+            index: true,
+            element: <RolesListPage />,
+          },
+          {
+            path: 'new',
+            element: <CreateRolePage />,
+          },
+          {
+            path: ':roleId',
+            element: <RoleDetailPage />,
+          },
+          {
+            path: ':roleId/edit',
+            element: <EditRolePage />,
           },
         ],
       },
