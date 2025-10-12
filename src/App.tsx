@@ -13,6 +13,9 @@ const App = () => {
           <NavLink to="/" end className={getLinkClass}>
             Dashboard
           </NavLink>
+          <NavLink to="/companies" className={getLinkClass}>
+            Companies
+          </NavLink>
           <NavLink to="/about" className={getLinkClass}>
             About
           </NavLink>
