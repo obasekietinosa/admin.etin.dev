@@ -1,15 +1,19 @@
 import { NavLink, Outlet } from 'react-router-dom'
-import './App.css'
+
+const navLinkBaseClasses =
+  'rounded-lg px-3 py-2 font-medium text-slate-200 transition-colors duration-150 hover:bg-white/10 hover:text-slate-100'
 
 const App = () => {
   const getLinkClass = ({ isActive }: { isActive: boolean }) =>
-    isActive ? 'app__link app__link--active' : 'app__link'
+    isActive
+      ? `${navLinkBaseClasses} bg-gradient-to-tr from-blue-600 to-violet-600 text-white shadow-lg shadow-blue-500/30`
+      : navLinkBaseClasses
 
   return (
-    <div className="app">
-      <header className="app__header">
-        <span className="app__brand">admin.etin.dev</span>
-        <nav className="app__nav" aria-label="Primary navigation">
+    <div className="flex min-h-screen flex-col">
+      <header className="flex items-center justify-between border-b border-white/10 bg-slate-900/90 px-6 py-5 backdrop-blur-xl sm:px-8">
+        <span className="text-lg font-semibold uppercase tracking-[0.15em] text-slate-100">admin.etin.dev</span>
+        <nav className="flex items-center gap-2 sm:gap-3" aria-label="Primary navigation">
           <NavLink to="/" end className={getLinkClass}>
             Dashboard
           </NavLink>
@@ -24,8 +28,10 @@ const App = () => {
           </NavLink>
         </nav>
       </header>
-      <main className="app__content">
-        <Outlet />
+      <main className="flex flex-1 justify-center px-4 py-10 sm:px-8">
+        <div className="w-full max-w-4xl">
+          <Outlet />
+        </div>
       </main>
     </div>
   )
