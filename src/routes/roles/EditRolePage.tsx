@@ -4,6 +4,13 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { fetchCompanies } from '../../api/companies'
 import { ApiError } from '../../api/client'
 import { Role, RoleInput, fetchRole, updateRole } from '../../api/roles'
+import {
+  buttonVariants,
+  errorAlertClassName,
+  panelClassName,
+  sectionHeadingClassName,
+  sectionSubheadingClassName,
+} from '../ui'
 import RoleForm, { RoleFormInitialValues } from './RoleForm'
 
 const toDateInputValue = (value: string) => {
@@ -86,9 +93,11 @@ const EditRolePage = () => {
 
   if (!Number.isFinite(id)) {
     return (
-      <div className="alert alert--error" role="alert">
-        <p>Invalid role identifier.</p>
-        <Link to=".." className="button button--secondary">
+      <div className={`${panelClassName} space-y-4`}>
+        <div className={errorAlertClassName} role="alert">
+          <p className="font-semibold">Invalid role identifier.</p>
+        </div>
+        <Link to=".." className={buttonVariants.secondary}>
           Back to roles
         </Link>
       </div>
@@ -96,15 +105,17 @@ const EditRolePage = () => {
   }
 
   if (isLoadingRole) {
-    return <p>Loading role…</p>
+    return <div className={`${panelClassName} text-sm text-slate-300`}>Loading role…</div>
   }
 
   if (isRoleError || !role) {
     return (
-      <div className="alert alert--error" role="alert">
-        <p>Unable to load the requested role.</p>
-        {roleError instanceof ApiError && <p>{roleError.message}</p>}
-        <Link to=".." className="button button--secondary">
+      <div className={`${panelClassName} space-y-4`}>
+        <div className={errorAlertClassName} role="alert">
+          <p className="font-semibold">Unable to load the requested role.</p>
+          {roleError instanceof ApiError && <p>{roleError.message}</p>}
+        </div>
+        <Link to=".." className={buttonVariants.secondary}>
           Back to roles
         </Link>
       </div>
@@ -112,28 +123,28 @@ const EditRolePage = () => {
   }
 
   return (
-    <article className="card stack stack--large">
-      <header>
-        <h2 className="section-title">Edit role</h2>
-        <p className="muted">
+    <article className={`${panelClassName} space-y-6`}>
+      <header className="space-y-2">
+        <h2 className={sectionHeadingClassName}>Edit role</h2>
+        <p className={sectionSubheadingClassName}>
           Update the details below and save to publish the latest information.
         </p>
       </header>
 
       {updateError instanceof ApiError && (
-        <div className="alert alert--error" role="alert">
-          <p>Unable to save the role.</p>
+        <div className={errorAlertClassName} role="alert">
+          <p className="font-semibold">Unable to save the role.</p>
           <p>{updateError.message}</p>
         </div>
       )}
 
       {isCompaniesError && (
-        <div className="alert alert--error" role="alert">
-          <p>Unable to load companies.</p>
+        <div className={errorAlertClassName} role="alert">
+          <p className="font-semibold">Unable to load companies.</p>
           {companiesError instanceof ApiError && <p>{companiesError.message}</p>}
           <button
             type="button"
-            className="button button--secondary"
+            className={`${buttonVariants.secondary} mt-3`}
             onClick={() => refetchCompanies()}
           >
             Retry
@@ -141,7 +152,9 @@ const EditRolePage = () => {
         </div>
       )}
 
-      {isLoadingCompanies && <p>Loading companies…</p>}
+      {isLoadingCompanies && (
+        <div className={`${panelClassName} text-sm text-slate-300`}>Loading companies…</div>
+      )}
 
       {companies && (
         <RoleForm
@@ -153,7 +166,7 @@ const EditRolePage = () => {
           secondaryAction={
             <button
               type="button"
-              className="button button--ghost"
+              className={buttonVariants.ghost}
               onClick={() => navigate(-1)}
             >
               Cancel

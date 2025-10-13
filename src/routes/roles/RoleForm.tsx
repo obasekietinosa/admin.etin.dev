@@ -8,6 +8,14 @@ import {
 } from 'react'
 import type { Company } from '../../api/companies'
 import type { RoleInput } from '../../api/roles'
+import {
+  buttonVariants,
+  errorAlertClassName,
+  formHelperClassName,
+  formInputClassName,
+  formLabelClassName,
+  formTextareaClassName,
+} from '../ui'
 
 export interface RoleFormInitialValues {
   title: string
@@ -150,10 +158,10 @@ const RoleForm = ({
   }
 
   return (
-    <form className="form" onSubmit={handleSubmit} noValidate>
-      <div className="form__grid">
-        <div className="form__field">
-          <label className="form__label" htmlFor="title">
+    <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+      <div className="grid gap-6 md:grid-cols-2">
+        <div>
+          <label className={formLabelClassName} htmlFor="title">
             Title
           </label>
           <input
@@ -162,14 +170,14 @@ const RoleForm = ({
             type="text"
             required
             placeholder="Senior Software Engineer"
-            className="form__input"
+            className={formInputClassName}
             value={values.title}
             onChange={handleChange}
           />
-          <p className="form__helper">Public job title shown on the site.</p>
+          <p className={formHelperClassName}>Public job title shown on the site.</p>
         </div>
-        <div className="form__field">
-          <label className="form__label" htmlFor="subtitle">
+        <div>
+          <label className={formLabelClassName} htmlFor="subtitle">
             Subtitle
           </label>
           <input
@@ -177,17 +185,17 @@ const RoleForm = ({
             name="subtitle"
             type="text"
             placeholder="Core platform team"
-            className="form__input"
+            className={formInputClassName}
             value={values.subtitle}
             onChange={handleChange}
           />
-          <p className="form__helper">Optional context such as team or location.</p>
+          <p className={formHelperClassName}>Optional context such as team, location, or focus area.</p>
         </div>
       </div>
 
-      <div className="form__grid">
-        <div className="form__field">
-          <label className="form__label" htmlFor="startDate">
+      <div className="grid gap-6 md:grid-cols-2">
+        <div>
+          <label className={formLabelClassName} htmlFor="startDate">
             Start date
           </label>
           <input
@@ -195,36 +203,36 @@ const RoleForm = ({
             name="startDate"
             type="date"
             required
-            className="form__input"
+            className={formInputClassName}
             value={values.startDate}
             onChange={handleChange}
           />
         </div>
-        <div className="form__field">
-          <label className="form__label" htmlFor="endDate">
+        <div>
+          <label className={formLabelClassName} htmlFor="endDate">
             End date
           </label>
           <input
             id="endDate"
             name="endDate"
             type="date"
-            className="form__input"
+            className={formInputClassName}
             value={values.endDate}
             onChange={handleChange}
           />
-          <p className="form__helper">Leave blank if the role is ongoing.</p>
+          <p className={formHelperClassName}>Leave blank if the role is ongoing.</p>
         </div>
       </div>
 
-      <div className="form__field">
-        <label className="form__label" htmlFor="companyId">
+      <div>
+        <label className={formLabelClassName} htmlFor="companyId">
           Company
         </label>
         <select
           id="companyId"
           name="companyId"
           required
-          className="form__input"
+          className={formInputClassName}
           value={values.companyId}
           onChange={handleChange}
         >
@@ -239,8 +247,8 @@ const RoleForm = ({
         </select>
       </div>
 
-      <div className="form__field">
-        <label className="form__label" htmlFor="description">
+      <div>
+        <label className={formLabelClassName} htmlFor="description">
           Description
         </label>
         <textarea
@@ -248,14 +256,14 @@ const RoleForm = ({
           name="description"
           rows={6}
           placeholder="Summarize responsibilities using Markdown."
-          className="form__textarea"
+          className={formTextareaClassName}
           value={values.description}
           onChange={handleChange}
         />
       </div>
 
-      <div className="form__field">
-        <label className="form__label" htmlFor="skills">
+      <div>
+        <label className={formLabelClassName} htmlFor="skills">
           Skills
         </label>
         <textarea
@@ -264,23 +272,23 @@ const RoleForm = ({
           rows={4}
           required
           placeholder="Type each skill on a new line"
-          className="form__textarea"
+          className={formTextareaClassName}
           value={values.skills}
           onChange={handleChange}
         />
-        <p className="form__helper">
+        <p className={formHelperClassName}>
           Provide at least one skill. Use separate lines or commas for multiple skills.
         </p>
       </div>
 
       {error && (
-        <div className="alert alert--error" role="alert">
+        <div className={errorAlertClassName} role="alert">
           <p>{error}</p>
         </div>
       )}
 
-      <div className="form__actions">
-        <button type="submit" className="button button--primary" disabled={isSubmitting}>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <button type="submit" className={buttonVariants.primary} disabled={isSubmitting}>
           {isSubmitting ? 'Saving…' : submitLabel}
         </button>
         {secondaryAction}

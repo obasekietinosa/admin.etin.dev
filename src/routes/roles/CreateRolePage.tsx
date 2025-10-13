@@ -3,6 +3,14 @@ import { useNavigate } from 'react-router-dom'
 import { fetchCompanies } from '../../api/companies'
 import { ApiError } from '../../api/client'
 import { Role, RoleInput, createRole } from '../../api/roles'
+import {
+  buttonVariants,
+  errorAlertClassName,
+  infoAlertClassName,
+  panelClassName,
+  sectionHeadingClassName,
+  sectionSubheadingClassName,
+} from '../ui'
 import RoleForm from './RoleForm'
 
 const CreateRolePage = () => {
@@ -36,28 +44,28 @@ const CreateRolePage = () => {
   })
 
   return (
-    <article className="card stack stack--large">
-      <header>
-        <h2 className="section-title">Create a new role</h2>
-        <p className="muted">
+    <article className={`${panelClassName} space-y-6`}>
+      <header className="space-y-2">
+        <h2 className={sectionHeadingClassName}>Create a new role</h2>
+        <p className={sectionSubheadingClassName}>
           Capture a professional experience entry that will surface on etin.dev.
         </p>
       </header>
 
       {error instanceof ApiError && (
-        <div className="alert alert--error" role="alert">
-          <p>Unable to save the role.</p>
+        <div className={errorAlertClassName} role="alert">
+          <p className="font-semibold">Unable to save the role.</p>
           <p>{error.message}</p>
         </div>
       )}
 
       {isCompaniesError && (
-        <div className="alert alert--error" role="alert">
-          <p>Unable to load companies.</p>
+        <div className={errorAlertClassName} role="alert">
+          <p className="font-semibold">Unable to load companies.</p>
           {companiesError instanceof ApiError && <p>{companiesError.message}</p>}
           <button
             type="button"
-            className="button button--secondary"
+            className={`${buttonVariants.secondary} mt-3`}
             onClick={() => refetchCompanies()}
           >
             Retry
@@ -65,7 +73,9 @@ const CreateRolePage = () => {
         </div>
       )}
 
-      {isLoadingCompanies && <p>Loading companies…</p>}
+      {isLoadingCompanies && (
+        <div className={`${panelClassName} text-sm text-slate-300`}>Loading companies…</div>
+      )}
 
       {companies && (
         <RoleForm
@@ -76,7 +86,7 @@ const CreateRolePage = () => {
           secondaryAction={
             <button
               type="button"
-              className="button button--ghost"
+              className={buttonVariants.ghost}
               onClick={() => navigate('..')}
             >
               Cancel
@@ -86,7 +96,7 @@ const CreateRolePage = () => {
       )}
 
       {companies && companies.length === 0 && !isLoadingCompanies && !isCompaniesError && (
-        <div className="alert alert--info" role="alert">
+        <div className={infoAlertClassName} role="alert">
           <p>No companies available yet. Create a company before assigning roles.</p>
         </div>
       )}

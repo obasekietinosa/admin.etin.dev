@@ -2,6 +2,20 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router-dom'
 import { ApiError } from '../../api/client'
 import { Role, deleteRole, fetchRoles } from '../../api/roles'
+import {
+  buttonVariants,
+  emptyStateClassName,
+  errorAlertClassName,
+  mutedTextClassName,
+  panelClassName,
+  sectionHeadingClassName,
+  sectionSubheadingClassName,
+  tableBodyCellClassName,
+  tableBodyRowClassName,
+  tableClassName,
+  tableHeadCellClassName,
+  tableWrapperClassName,
+} from '../ui'
 
 const isOngoing = (value: string) => !value || value.startsWith('0001-01-01')
 
@@ -69,33 +83,38 @@ const RolesListPage = () => {
   }
 
   return (
-    <div className="stack stack--large">
-      <div className="cluster cluster--between">
-        <div>
-          <h2 className="section-title">Experience roles</h2>
-          <p className="muted">
-            {roles?.length ?? 0} role
-            {roles && roles.length !== 1 ? 's' : ''} maintained in the API.
+    <div className="space-y-8">
+      <div
+        className={`${panelClassName} flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between`}
+      >
+        <div className="space-y-1">
+          <h2 className={sectionHeadingClassName}>Experience roles</h2>
+          <p className={mutedTextClassName}>
+            {roles?.length ?? 0} role{roles && roles.length !== 1 ? 's' : ''} maintained in the API.
           </p>
         </div>
         <button
           type="button"
-          className="button button--primary"
+          className={buttonVariants.primary}
           onClick={() => navigate('new')}
         >
           Add role
         </button>
       </div>
 
-      {isLoading && <p>Loading roles…</p>}
+      {isLoading && (
+        <div className={`${panelClassName} text-sm text-slate-300`}>Loading roles…</div>
+      )}
 
       {isError && (
-        <div className="alert alert--error" role="alert">
-          <p>Unable to load roles.</p>
-          {error instanceof ApiError && <p>{error.message}</p>}
+        <div className={`${panelClassName} space-y-4`}>
+          <div className={errorAlertClassName} role="alert">
+            <p className="font-semibold">Unable to load roles.</p>
+            {error instanceof ApiError && <p>{error.message}</p>}
+          </div>
           <button
             type="button"
-            className="button button--secondary"
+            className={buttonVariants.secondary}
             onClick={() => refetch()}
           >
             Retry
@@ -104,60 +123,68 @@ const RolesListPage = () => {
       )}
 
       {deleteError && (
-        <div className="alert alert--error" role="alert">
-          <p>Failed to delete the role. Please try again.</p>
+        <div className={errorAlertClassName} role="alert">
+          <p className="font-semibold">Failed to delete the role. Please try again.</p>
           {deleteError instanceof ApiError && <p>{deleteError.message}</p>}
         </div>
       )}
 
       {roles && roles.length > 0 ? (
-        <div className="card">
-          <table className="table" aria-label="Roles">
-            <thead>
+        <div className={tableWrapperClassName}>
+          <table className={tableClassName} aria-label="Roles">
+            <thead className="bg-white/5 text-slate-300">
               <tr>
-                <th scope="col">Title</th>
-                <th scope="col">Company</th>
-                <th scope="col">Duration</th>
-                <th scope="col">Skills</th>
-                <th scope="col" className="table__actions">
+                <th scope="col" className={tableHeadCellClassName}>
+                  Title
+                </th>
+                <th scope="col" className={tableHeadCellClassName}>
+                  Company
+                </th>
+                <th scope="col" className={tableHeadCellClassName}>
+                  Duration
+                </th>
+                <th scope="col" className={tableHeadCellClassName}>
+                  Skills
+                </th>
+                <th scope="col" className={tableHeadCellClassName}>
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody>
               {roles.map((role) => (
-                <tr key={role.id}>
-                  <th scope="row">
-                    <Link to={`${role.id}`} className="link">
+                <tr key={role.id} className={tableBodyRowClassName}>
+                  <th scope="row" className={`${tableBodyCellClassName} space-y-1 font-semibold`}>
+                    <Link to={`${role.id}`} className="text-sky-300 transition hover:text-sky-200">
                       {role.title}
                     </Link>
                     {role.subtitle && (
-                      <p className="muted" aria-label="Role subtitle">
+                      <p className={mutedTextClassName} aria-label="Role subtitle">
                         {role.subtitle}
                       </p>
                     )}
                   </th>
-                  <td>
+                  <td className={tableBodyCellClassName}>
                     {role.companyIcon && (
                       <span aria-hidden="true">{role.companyIcon} </span>
                     )}
                     {role.company}
                   </td>
-                  <td>{formatTenure(role)}</td>
-                  <td>
+                  <td className={tableBodyCellClassName}>{formatTenure(role)}</td>
+                  <td className={tableBodyCellClassName}>
                     {role.skills.length > 0 ? role.skills.join(', ') : '—'}
                   </td>
-                  <td className="table__actions">
-                    <div className="cluster">
-                      <Link to={`${role.id}`} className="button button--ghost">
+                  <td className={tableBodyCellClassName}>
+                    <div className="flex flex-wrap gap-2">
+                      <Link to={`${role.id}`} className={buttonVariants.ghost}>
                         View
                       </Link>
-                      <Link to={`${role.id}/edit`} className="button button--ghost">
+                      <Link to={`${role.id}/edit`} className={buttonVariants.ghost}>
                         Edit
                       </Link>
                       <button
                         type="button"
-                        className="button button--danger"
+                        className={buttonVariants.danger}
                         onClick={() => handleDelete(role)}
                         disabled={isDeleting && deletingRoleId === role.id}
                       >
@@ -173,13 +200,13 @@ const RolesListPage = () => {
           </table>
         </div>
       ) : (
-        !isLoading && (
-          <div className="empty-state">
-            <h3>No roles yet</h3>
-            <p>Document your experience by creating the first role.</p>
+        !isLoading && !isError && (
+          <div className={emptyStateClassName}>
+            <h3 className="text-lg font-semibold text-white">No roles yet</h3>
+            <p className={sectionSubheadingClassName}>Document your experience by creating the first role.</p>
             <button
               type="button"
-              className="button button--primary"
+              className={buttonVariants.primary}
               onClick={() => navigate('new')}
             >
               Create role

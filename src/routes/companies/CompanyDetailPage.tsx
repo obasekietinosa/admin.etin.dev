@@ -2,6 +2,14 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { deleteCompany, fetchCompany } from '../../api/companies'
 import { ApiError } from '../../api/client'
+import {
+  buttonVariants,
+  errorAlertClassName,
+  mutedTextClassName,
+  panelClassName,
+  sectionHeadingClassName,
+  sectionSubheadingClassName,
+} from '../ui'
 
 const CompanyDetailPage = () => {
   const { companyId } = useParams()
@@ -34,22 +42,26 @@ const CompanyDetailPage = () => {
 
   if (!Number.isFinite(id)) {
     return (
-      <div className="alert alert--error" role="alert">
-        <p>Invalid company identifier.</p>
+      <div className={errorAlertClassName} role="alert">
+        <p className="font-semibold">Invalid company identifier.</p>
       </div>
     )
   }
 
   if (isLoading) {
-    return <p>Loading company…</p>
+    return (
+      <div className={`${panelClassName} text-sm text-slate-300`}>Loading company…</div>
+    )
   }
 
   if (isError || !company) {
     return (
-      <div className="alert alert--error" role="alert">
-        <p>Unable to load the requested company.</p>
-        {error instanceof ApiError && <p>{error.message}</p>}
-        <Link to=".." className="button button--secondary">
+      <div className={`${panelClassName} space-y-4`}>
+        <div className={errorAlertClassName} role="alert">
+          <p className="font-semibold">Unable to load the requested company.</p>
+          {error instanceof ApiError && <p>{error.message}</p>}
+        </div>
+        <Link to=".." className={buttonVariants.secondary}>
           Back to companies
         </Link>
       </div>
@@ -67,22 +79,22 @@ const CompanyDetailPage = () => {
   }
 
   return (
-    <article className="card stack stack--large">
-      <header className="cluster cluster--between">
-        <div>
-          <p className="muted">Company #{company.id}</p>
-          <h2 className="section-title">
-            {company.icon && <span aria-hidden="true">{company.icon} </span>}
-            {company.name}
+    <article className={`${panelClassName} space-y-6`}>
+      <header className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+        <div className="space-y-2">
+          <p className={mutedTextClassName}>Company #{company.id}</p>
+          <h2 className={`${sectionHeadingClassName} flex items-center gap-2`}>
+            {company.icon && <span aria-hidden="true">{company.icon}</span>}
+            <span>{company.name}</span>
           </h2>
         </div>
-        <div className="cluster">
-          <Link to="edit" className="button button--secondary">
+        <div className="flex flex-wrap gap-2">
+          <Link to="edit" className={buttonVariants.secondary}>
             Edit
           </Link>
           <button
             type="button"
-            className="button button--danger"
+            className={buttonVariants.danger}
             onClick={handleDelete}
             disabled={isDeleting}
           >
@@ -90,12 +102,16 @@ const CompanyDetailPage = () => {
           </button>
         </div>
       </header>
-      <section>
-        <h3 className="section-subtitle">Description</h3>
-        <p>{company.description || 'No description provided yet.'}</p>
+      <section className="space-y-2">
+        <h3 className="text-sm font-semibold uppercase tracking-[0.25em] text-slate-400">
+          Description
+        </h3>
+        <p className={sectionSubheadingClassName}>
+          {company.description || 'No description provided yet.'}
+        </p>
       </section>
-      <footer className="cluster">
-        <Link to=".." className="button button--ghost">
+      <footer className="flex flex-wrap gap-2">
+        <Link to=".." className={buttonVariants.ghost}>
           Back to list
         </Link>
       </footer>

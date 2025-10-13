@@ -1,5 +1,13 @@
 import { ChangeEvent, FormEvent, ReactNode, useEffect, useState } from 'react'
 import type { CompanyInput } from '../../api/companies'
+import {
+  buttonVariants,
+  errorAlertClassName,
+  formHelperClassName,
+  formInputClassName,
+  formLabelClassName,
+  formTextareaClassName,
+} from '../ui'
 
 export interface CompanyFormValues extends CompanyInput {}
 
@@ -53,10 +61,10 @@ const CompanyForm = ({
   }
 
   return (
-    <form className="form" onSubmit={handleSubmit} noValidate>
-      <div className="form__grid">
-        <div className="form__field">
-          <label className="form__label" htmlFor="name">
+    <form className="space-y-6" onSubmit={handleSubmit} noValidate>
+      <div className="grid gap-6 md:grid-cols-2">
+        <div>
+          <label className={formLabelClassName} htmlFor="name">
             Name
           </label>
           <input
@@ -65,14 +73,14 @@ const CompanyForm = ({
             type="text"
             required
             placeholder="Acme Inc."
-            className="form__input"
+            className={formInputClassName}
             value={values.name}
             onChange={handleChange}
           />
-          <p className="form__helper">Public display name for the company.</p>
+          <p className={formHelperClassName}>Public display name for the company.</p>
         </div>
-        <div className="form__field">
-          <label className="form__label" htmlFor="icon">
+        <div>
+          <label className={formLabelClassName} htmlFor="icon">
             Icon
           </label>
           <input
@@ -80,15 +88,15 @@ const CompanyForm = ({
             name="icon"
             type="text"
             placeholder="🚀"
-            className="form__input"
+            className={formInputClassName}
             value={values.icon}
             onChange={handleChange}
           />
-          <p className="form__helper">Emoji or short label used alongside the company name.</p>
+          <p className={formHelperClassName}>Emoji or short label used alongside the company name.</p>
         </div>
       </div>
-      <div className="form__field">
-        <label className="form__label" htmlFor="description">
+      <div>
+        <label className={formLabelClassName} htmlFor="description">
           Description
         </label>
         <textarea
@@ -96,18 +104,19 @@ const CompanyForm = ({
           name="description"
           rows={4}
           placeholder="What does this company do?"
-          className="form__textarea"
+          className={formTextareaClassName}
           value={values.description}
           onChange={handleChange}
         />
+        <p className={formHelperClassName}>Provide a concise overview of the company&apos;s focus.</p>
       </div>
       {error && (
-        <div className="alert alert--error" role="alert">
+        <div className={errorAlertClassName} role="alert">
           <p>{error}</p>
         </div>
       )}
-      <div className="form__actions">
-        <button type="submit" className="button button--primary" disabled={isSubmitting}>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <button type="submit" className={buttonVariants.primary} disabled={isSubmitting}>
           {isSubmitting ? 'Saving…' : submitLabel}
         </button>
         {secondaryAction}

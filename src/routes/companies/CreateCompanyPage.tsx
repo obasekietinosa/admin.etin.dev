@@ -2,6 +2,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
 import { Company, CompanyInput, createCompany } from '../../api/companies'
 import { ApiError } from '../../api/client'
+import {
+  buttonVariants,
+  errorAlertClassName,
+  panelClassName,
+  sectionHeadingClassName,
+  sectionSubheadingClassName,
+} from '../ui'
 import CompanyForm from './CompanyForm'
 
 const CreateCompanyPage = () => {
@@ -17,14 +24,16 @@ const CreateCompanyPage = () => {
   })
 
   return (
-    <article className="card stack stack--large">
-      <header>
-        <h2 className="section-title">Create a new company</h2>
-        <p className="muted">Fill out the form below to add a company to the platform.</p>
+    <article className={`${panelClassName} space-y-6`}>
+      <header className="space-y-2">
+        <h2 className={sectionHeadingClassName}>Create a new company</h2>
+        <p className={sectionSubheadingClassName}>
+          Fill out the form below to add a company to the platform.
+        </p>
       </header>
       {error instanceof ApiError && (
-        <div className="alert alert--error" role="alert">
-          <p>Unable to save the company.</p>
+        <div className={errorAlertClassName} role="alert">
+          <p className="font-semibold">Unable to save the company.</p>
           <p>{error.message}</p>
         </div>
       )}
@@ -32,6 +41,15 @@ const CreateCompanyPage = () => {
         onSubmit={(values) => mutate(values)}
         isSubmitting={isPending}
         submitLabel="Create company"
+        secondaryAction={
+          <button
+            type="button"
+            className={buttonVariants.ghost}
+            onClick={() => navigate(-1)}
+          >
+            Cancel
+          </button>
+        }
       />
     </article>
   )

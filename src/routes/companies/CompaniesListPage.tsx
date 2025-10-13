@@ -6,6 +6,20 @@ import {
   fetchCompanies,
 } from '../../api/companies'
 import { ApiError } from '../../api/client'
+import {
+  buttonVariants,
+  emptyStateClassName,
+  errorAlertClassName,
+  mutedTextClassName,
+  panelClassName,
+  sectionHeadingClassName,
+  sectionSubheadingClassName,
+  tableBodyCellClassName,
+  tableBodyRowClassName,
+  tableClassName,
+  tableHeadCellClassName,
+  tableWrapperClassName,
+} from '../ui'
 
 const CompaniesListPage = () => {
   const navigate = useNavigate()
@@ -45,77 +59,88 @@ const CompaniesListPage = () => {
   }
 
   return (
-    <div className="stack stack--large">
-      <div className="cluster cluster--between">
-        <div>
-          <h2 className="section-title">Company directory</h2>
-          <p className="muted">
-            {companies?.length ?? 0} company{companies && companies.length !== 1 ? 'ies' : ''}{' '}
-            managed through the API.
+    <div className="space-y-8">
+      <div
+        className={`${panelClassName} flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between`}
+      >
+        <div className="space-y-1">
+          <h2 className={sectionHeadingClassName}>Company directory</h2>
+          <p className={mutedTextClassName}>
+            {companies?.length ?? 0} company{companies && companies.length !== 1 ? 'ies' : ''} managed through the API.
           </p>
         </div>
         <button
           type="button"
-          className="button button--primary"
+          className={buttonVariants.primary}
           onClick={() => navigate('new')}
         >
           Add company
         </button>
       </div>
 
-      {isLoading && <p>Loading companies…</p>}
+      {isLoading && (
+        <div className={`${panelClassName} text-sm text-slate-300`}>Loading companies…</div>
+      )}
 
       {isError && (
-        <div className="alert alert--error" role="alert">
-          <p>Unable to load companies.</p>
-          {error instanceof ApiError && <p>{error.message}</p>}
-          <button type="button" className="button button--secondary" onClick={() => refetch()}>
+        <div className={`${panelClassName} space-y-4`}>
+          <div className={errorAlertClassName} role="alert">
+            <p className="font-semibold">Unable to load companies.</p>
+            {error instanceof ApiError && <p>{error.message}</p>}
+          </div>
+          <button type="button" className={buttonVariants.secondary} onClick={() => refetch()}>
             Retry
           </button>
         </div>
       )}
 
       {deleteError && (
-        <div className="alert alert--error" role="alert">
-          <p>Failed to delete the company. Please try again.</p>
+        <div className={errorAlertClassName} role="alert">
+          <p className="font-semibold">Failed to delete the company. Please try again.</p>
           {deleteError instanceof ApiError && <p>{deleteError.message}</p>}
         </div>
       )}
 
       {companies && companies.length > 0 ? (
-        <div className="card">
-          <table className="table" aria-label="Companies">
-            <thead>
+        <div className={tableWrapperClassName}>
+          <table className={tableClassName} aria-label="Companies">
+            <thead className="bg-white/5 text-slate-300">
               <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Icon</th>
-                <th scope="col">Description</th>
-                <th scope="col" className="table__actions">
+                <th scope="col" className={tableHeadCellClassName}>
+                  Name
+                </th>
+                <th scope="col" className={tableHeadCellClassName}>
+                  Icon
+                </th>
+                <th scope="col" className={tableHeadCellClassName}>
+                  Description
+                </th>
+                <th scope="col" className={tableHeadCellClassName}>
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody>
               {companies.map((company) => (
-                <tr key={company.id}>
-                  <th scope="row">
-                    <Link to={`${company.id}`} className="link">
+                <tr key={company.id} className={tableBodyRowClassName}>
+                  <th scope="row" className={`${tableBodyCellClassName} font-semibold`}>
+                    <Link to={`${company.id}`} className="text-sky-300 transition hover:text-sky-200">
                       {company.name}
                     </Link>
                   </th>
-                  <td>{company.icon}</td>
-                  <td>{company.description}</td>
-                  <td className="table__actions">
-                    <div className="cluster">
-                      <Link to={`${company.id}`} className="button button--ghost">
+                  <td className={tableBodyCellClassName}>{company.icon}</td>
+                  <td className={tableBodyCellClassName}>{company.description}</td>
+                  <td className={tableBodyCellClassName}>
+                    <div className="flex flex-wrap gap-2">
+                      <Link to={`${company.id}`} className={buttonVariants.ghost}>
                         View
                       </Link>
-                      <Link to={`${company.id}/edit`} className="button button--ghost">
+                      <Link to={`${company.id}/edit`} className={buttonVariants.ghost}>
                         Edit
                       </Link>
                       <button
                         type="button"
-                        className="button button--danger"
+                        className={buttonVariants.danger}
                         onClick={() => handleDelete(company)}
                         disabled={isDeleting && deletingCompanyId === company.id}
                       >
@@ -129,13 +154,13 @@ const CompaniesListPage = () => {
           </table>
         </div>
       ) : (
-        !isLoading && (
-          <div className="empty-state">
-            <h3>No companies yet</h3>
-            <p>Get started by creating your first company profile.</p>
+        !isLoading && !isError && (
+          <div className={emptyStateClassName}>
+            <h3 className="text-lg font-semibold text-white">No companies yet</h3>
+            <p className={sectionSubheadingClassName}>Get started by creating your first company profile.</p>
             <button
               type="button"
-              className="button button--primary"
+              className={buttonVariants.primary}
               onClick={() => navigate('new')}
             >
               Create company

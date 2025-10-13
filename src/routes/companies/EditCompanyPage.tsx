@@ -7,6 +7,13 @@ import {
   updateCompany,
 } from '../../api/companies'
 import { ApiError } from '../../api/client'
+import {
+  buttonVariants,
+  errorAlertClassName,
+  panelClassName,
+  sectionHeadingClassName,
+  sectionSubheadingClassName,
+} from '../ui'
 import CompanyForm from './CompanyForm'
 
 const EditCompanyPage = () => {
@@ -44,22 +51,26 @@ const EditCompanyPage = () => {
 
   if (!Number.isFinite(id)) {
     return (
-      <div className="alert alert--error" role="alert">
-        <p>Invalid company identifier.</p>
+      <div className={errorAlertClassName} role="alert">
+        <p className="font-semibold">Invalid company identifier.</p>
       </div>
     )
   }
 
   if (isLoading) {
-    return <p>Loading company…</p>
+    return (
+      <div className={`${panelClassName} text-sm text-slate-300`}>Loading company…</div>
+    )
   }
 
   if (isError || !company) {
     return (
-      <div className="alert alert--error" role="alert">
-        <p>Unable to load the company for editing.</p>
-        {error instanceof ApiError && <p>{error.message}</p>}
-        <Link to=".." className="button button--secondary">
+      <div className={`${panelClassName} space-y-4`}>
+        <div className={errorAlertClassName} role="alert">
+          <p className="font-semibold">Unable to load the company for editing.</p>
+          {error instanceof ApiError && <p>{error.message}</p>}
+        </div>
+        <Link to=".." className={buttonVariants.secondary}>
           Back to companies
         </Link>
       </div>
@@ -67,14 +78,16 @@ const EditCompanyPage = () => {
   }
 
   return (
-    <article className="card stack stack--large">
-      <header className="stack">
-        <h2 className="section-title">Update {company.name}</h2>
-        <p className="muted">Make changes below and save when you&apos;re ready.</p>
+    <article className={`${panelClassName} space-y-6`}>
+      <header className="space-y-2">
+        <h2 className={sectionHeadingClassName}>Update {company.name}</h2>
+        <p className={sectionSubheadingClassName}>
+          Make changes below and save when you&apos;re ready.
+        </p>
       </header>
       {mutationError instanceof ApiError && (
-        <div className="alert alert--error" role="alert">
-          <p>Unable to update the company.</p>
+        <div className={errorAlertClassName} role="alert">
+          <p className="font-semibold">Unable to update the company.</p>
           <p>{mutationError.message}</p>
         </div>
       )}
@@ -88,7 +101,7 @@ const EditCompanyPage = () => {
         isSubmitting={isPending}
         submitLabel="Save changes"
         secondaryAction={
-          <Link to={`../${company.id}`} className="button button--ghost">
+          <Link to={`../${company.id}`} className={buttonVariants.ghost}>
             Cancel
           </Link>
         }
