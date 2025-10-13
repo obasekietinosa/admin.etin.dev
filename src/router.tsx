@@ -15,6 +15,11 @@ import RolesListPage from './routes/roles/RolesListPage'
 import CreateRolePage from './routes/roles/CreateRolePage'
 import RoleDetailPage from './routes/roles/RoleDetailPage'
 import EditRolePage from './routes/roles/EditRolePage'
+import ProjectsLayout from './routes/projects/ProjectsLayout'
+import ProjectsListPage from './routes/projects/ProjectsListPage'
+import CreateProjectPage from './routes/projects/CreateProjectPage'
+import ProjectDetailPage from './routes/projects/ProjectDetailPage'
+import EditProjectPage from './routes/projects/EditProjectPage'
 
 export const router = createBrowserRouter([
   {
@@ -77,6 +82,28 @@ export const router = createBrowserRouter([
               {
                 path: ':roleId/edit',
                 element: <EditRolePage />,
+              },
+            ],
+          },
+          {
+            path: 'projects',
+            element: <ProjectsLayout />,
+            children: [
+              {
+                index: true,
+                element: <ProjectsListPage />,
+              },
+              {
+                path: 'new',
+                element: <CreateProjectPage />,
+              },
+              {
+                path: ':projectId',
+                element: <ProjectDetailPage />,
+              },
+              {
+                path: ':projectId/edit',
+                element: <EditProjectPage />,
               },
             ],
           },
