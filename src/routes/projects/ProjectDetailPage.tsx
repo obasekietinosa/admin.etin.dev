@@ -3,9 +3,10 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ApiError } from '../../api/client'
 import { deleteProject, fetchProject } from '../../api/projects'
 
-const isOngoing = (value?: string) => !value || value.startsWith('0001-01-01')
+const isOngoing = (value?: string | null) =>
+  !value || value.startsWith('0001-01-01')
 
-const formatDate = (value?: string) => {
+const formatDate = (value?: string | null) => {
   if (!value) {
     return 'Unknown'
   }

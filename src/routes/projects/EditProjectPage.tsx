@@ -5,7 +5,7 @@ import { ApiError } from '../../api/client'
 import { Project, ProjectInput, fetchProject, updateProject } from '../../api/projects'
 import ProjectForm, { ProjectFormInitialValues } from './ProjectForm'
 
-const toDateInputValue = (value?: string) => {
+const toDateInputValue = (value?: string | null) => {
   if (!value) {
     return ''
   }

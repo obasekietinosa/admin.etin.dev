@@ -7,7 +7,7 @@ import {
 } from '../../api/projects'
 import { ApiError } from '../../api/client'
 
-const formatDate = (value?: string) => {
+const formatDate = (value?: string | null) => {
   if (!value) {
     return '—'
   }
@@ -24,7 +24,8 @@ const formatDate = (value?: string) => {
   }).format(date)
 }
 
-const isOngoing = (value?: string) => !value || value.startsWith('0001-01-01')
+const isOngoing = (value?: string | null) =>
+  !value || value.startsWith('0001-01-01')
 
 const ProjectsListPage = () => {
   const navigate = useNavigate()
