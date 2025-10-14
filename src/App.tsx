@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { useAuth } from './auth/AuthProvider'
+import { useAuth } from './auth/useAuth'
 
 const navLinkBaseClasses =
   'rounded-lg px-3 py-2 font-medium text-slate-200 transition-colors duration-150 hover:bg-white/10 hover:text-slate-100'
@@ -38,6 +38,9 @@ const App = () => {
             </NavLink>
             <NavLink to="/roles" className={getLinkClass}>
               Roles
+            </NavLink>
+            <NavLink to="/projects" className={getLinkClass}>
+              Projects
             </NavLink>
             <NavLink to="/about" className={getLinkClass}>
               About

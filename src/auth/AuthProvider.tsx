@@ -1,8 +1,7 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useSyncExternalStore } from 'react'
+import { useCallback, useEffect, useMemo, useSyncExternalStore } from 'react'
 import { adminLogin, adminLogout } from '../api/auth'
 import { ApiError } from '../api/client'
 import {
-  AuthSession,
   clearSession as clearStoredSession,
   getStoredSession,
   getSessionSnapshot,
@@ -10,20 +9,7 @@ import {
   setSession as persistSession,
   subscribe,
 } from './session'
-
-type LoginCredentials = {
-  email: string
-  password: string
-}
-
-type AuthContextValue = {
-  session: AuthSession | null
-  isAuthenticated: boolean
-  login: (credentials: LoginCredentials) => Promise<void>
-  logout: () => Promise<void>
-}
-
-const AuthContext = createContext<AuthContextValue | undefined>(undefined)
+import { AuthContext, LoginCredentials } from './AuthContext'
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const session = useSyncExternalStore(subscribe, getSessionSnapshot, getSessionSnapshot)
@@ -67,12 +53,3 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
-export const useAuth = () => {
-  const context = useContext(AuthContext)
-
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider')
-  }
-
-  return context
-}

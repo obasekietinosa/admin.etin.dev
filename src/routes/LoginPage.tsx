@@ -2,7 +2,7 @@ import { FormEvent, useEffect, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ApiError } from '../api/client'
-import { useAuth } from '../auth/AuthProvider'
+import { useAuth } from '../auth/useAuth'
 
 type LocationState = {
   from?: string
