@@ -20,6 +20,11 @@ import ProjectsListPage from './routes/projects/ProjectsListPage'
 import CreateProjectPage from './routes/projects/CreateProjectPage'
 import ProjectDetailPage from './routes/projects/ProjectDetailPage'
 import EditProjectPage from './routes/projects/EditProjectPage'
+import NotesLayout from './routes/notes/NotesLayout'
+import NotesListPage from './routes/notes/NotesListPage'
+import CreateNotePage from './routes/notes/CreateNotePage'
+import NoteDetailPage from './routes/notes/NoteDetailPage'
+import EditNotePage from './routes/notes/EditNotePage'
 import TagsLayout from './routes/tags/TagsLayout'
 import TagsListPage from './routes/tags/TagsListPage'
 import CreateTagPage from './routes/tags/CreateTagPage'
@@ -109,6 +114,28 @@ export const router = createBrowserRouter([
               {
                 path: ':projectId/edit',
                 element: <EditProjectPage />,
+              },
+            ],
+          },
+          {
+            path: 'notes',
+            element: <NotesLayout />,
+            children: [
+              {
+                index: true,
+                element: <NotesListPage />,
+              },
+              {
+                path: 'new',
+                element: <CreateNotePage />,
+              },
+              {
+                path: ':noteId',
+                element: <NoteDetailPage />,
+              },
+              {
+                path: ':noteId/edit',
+                element: <EditNotePage />,
               },
             ],
           },
