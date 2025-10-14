@@ -20,6 +20,11 @@ import ProjectsListPage from './routes/projects/ProjectsListPage'
 import CreateProjectPage from './routes/projects/CreateProjectPage'
 import ProjectDetailPage from './routes/projects/ProjectDetailPage'
 import EditProjectPage from './routes/projects/EditProjectPage'
+import TagsLayout from './routes/tags/TagsLayout'
+import TagsListPage from './routes/tags/TagsListPage'
+import CreateTagPage from './routes/tags/CreateTagPage'
+import TagDetailPage from './routes/tags/TagDetailPage'
+import EditTagPage from './routes/tags/EditTagPage'
 
 export const router = createBrowserRouter([
   {
@@ -104,6 +109,28 @@ export const router = createBrowserRouter([
               {
                 path: ':projectId/edit',
                 element: <EditProjectPage />,
+              },
+            ],
+          },
+          {
+            path: 'tags',
+            element: <TagsLayout />,
+            children: [
+              {
+                index: true,
+                element: <TagsListPage />,
+              },
+              {
+                path: 'new',
+                element: <CreateTagPage />,
+              },
+              {
+                path: ':tagId',
+                element: <TagDetailPage />,
+              },
+              {
+                path: ':tagId/edit',
+                element: <EditTagPage />,
               },
             ],
           },
