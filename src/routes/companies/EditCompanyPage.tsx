@@ -81,7 +81,7 @@ const EditCompanyPage = () => {
       <CompanyForm
         initialValues={{
           name: company.name,
-          icon: company.icon,
+          icon: company.icon ?? '',
           description: company.description,
         }}
         onSubmit={(values) => saveCompany(values)}
