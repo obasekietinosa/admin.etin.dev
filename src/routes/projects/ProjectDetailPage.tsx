@@ -130,34 +130,7 @@ const ProjectDetailPage = () => {
     removeProject(project.id)
   }
 
-  const primaryImageUrl =
-    project.coverImageUrl ?? (project as { imageUrl?: string | null }).imageUrl ?? null
-  const primaryImageAlt =
-    project.coverImageAlt ?? (project as { imageAlt?: string | null }).imageAlt ?? ''
-  const galleryImages = project.images ?? []
-
-  const displayImages: Array<{ key: string | number; url: string; altText: string }> =
-    galleryImages.length > 0
-      ? galleryImages.map((image) => ({
-          key: image.id,
-          url: image.url,
-          altText:
-            image.altText && image.altText.trim().length > 0
-              ? image.altText
-              : primaryImageAlt || `Visual for ${project.title}`,
-        }))
-      : primaryImageUrl
-        ? [
-            {
-              key: 'primary',
-              url: primaryImageUrl,
-              altText:
-                primaryImageAlt && primaryImageAlt.trim().length > 0
-                  ? primaryImageAlt
-                  : `Visual for ${project.title}`,
-            },
-          ]
-        : []
+  const imageUrl = project.imageUrl?.trim() ?? null
 
   const uploadErrorMessage =
     uploadError instanceof ApiError
@@ -203,19 +176,21 @@ const ProjectDetailPage = () => {
 
       <section className="stack">
         <h3 className="section-subtitle">Images</h3>
-        {displayImages.length > 0 ? (
+        {imageUrl ? (
           <div className="media-grid">
-            {displayImages.map((image) => (
-              <figure key={image.key} className="media-grid__item">
-                <img src={image.url} alt={image.altText} className="media-grid__image" />
-                {image.altText && (
-                  <figcaption className="media-grid__caption">{image.altText}</figcaption>
-                )}
-              </figure>
-            ))}
+            <figure className="media-grid__item">
+              <img
+                src={imageUrl}
+                alt={`Visual for ${project.title}`}
+                className="media-grid__image"
+              />
+              <figcaption className="media-grid__caption">
+                Visual for {project.title}
+              </figcaption>
+            </figure>
           </div>
         ) : (
-          <p className="muted">No images uploaded yet.</p>
+          <p className="muted">No image uploaded yet.</p>
         )}
 
         <ImageUploadForm

@@ -1,19 +1,10 @@
 import { apiRequest } from './client'
 
-export interface CompanyImage {
-  id: number
-  url: string
-  altText?: string | null
-}
-
 export interface Company {
   id: number
   name: string
-  icon: string
+  icon?: string | null
   description: string
-  logoUrl?: string | null
-  logoAlt?: string | null
-  images?: CompanyImage[]
 }
 
 export interface CompanyInput {

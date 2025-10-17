@@ -9,6 +9,25 @@ import {
 import { ApiError } from '../../api/client'
 import ImageUploadForm from '../../components/ImageUploadForm'
 
+const isLikelyImageUrl = (value?: string | null) => {
+  if (!value) {
+    return false
+  }
+
+  const trimmed = value.trim()
+
+  if (trimmed.length === 0) {
+    return false
+  }
+
+  return (
+    /^https?:\/\//i.test(trimmed) ||
+    trimmed.startsWith('/') ||
+    trimmed.startsWith('data:') ||
+    trimmed.startsWith('blob:')
+  )
+}
+
 const CompanyDetailPage = () => {
   const { companyId } = useParams()
   const navigate = useNavigate()
@@ -108,34 +127,9 @@ const CompanyDetailPage = () => {
     removeCompany(company.id)
   }
 
-  const logoUrl =
-    company.logoUrl ?? (company as { imageUrl?: string | null }).imageUrl ?? null
-  const logoAlt =
-    company.logoAlt ?? (company as { imageAlt?: string | null }).imageAlt ?? ''
-  const galleryImages = company.images ?? []
-
-  const displayImages: Array<{ key: string | number; url: string; altText: string }> =
-    galleryImages.length > 0
-      ? galleryImages.map((image) => ({
-          key: image.id,
-          url: image.url,
-          altText:
-            image.altText && image.altText.trim().length > 0
-              ? image.altText
-              : logoAlt || `Brand imagery for ${company.name}`,
-        }))
-      : logoUrl
-        ? [
-            {
-              key: 'logo',
-              url: logoUrl,
-              altText:
-                logoAlt && logoAlt.trim().length > 0
-                  ? logoAlt
-                  : `Logo for ${company.name}`,
-            },
-          ]
-        : []
+  const iconValue = company.icon?.trim() ?? ''
+  const iconUrl = isLikelyImageUrl(iconValue) ? iconValue : null
+  const iconEmoji = iconUrl ? '' : iconValue
 
   const uploadErrorMessage =
     uploadError instanceof ApiError
@@ -150,7 +144,7 @@ const CompanyDetailPage = () => {
         <div>
           <p className="muted">Company #{company.id}</p>
           <h2 className="section-title">
-            {company.icon && <span aria-hidden="true">{company.icon} </span>}
+            {iconEmoji && <span aria-hidden="true">{iconEmoji} </span>}
             {company.name}
           </h2>
         </div>
@@ -174,19 +168,21 @@ const CompanyDetailPage = () => {
       </section>
       <section className="stack">
         <h3 className="section-subtitle">Brand imagery</h3>
-        {displayImages.length > 0 ? (
+        {iconUrl ? (
           <div className="media-grid">
-            {displayImages.map((image) => (
-              <figure key={image.key} className="media-grid__item">
-                <img src={image.url} alt={image.altText} className="media-grid__image" />
-                {image.altText && (
-                  <figcaption className="media-grid__caption">{image.altText}</figcaption>
-                )}
-              </figure>
-            ))}
+            <figure className="media-grid__item">
+              <img
+                src={iconUrl}
+                alt={`Logo for ${company.name}`}
+                className="media-grid__image"
+              />
+              <figcaption className="media-grid__caption">
+                Logo for {company.name}
+              </figcaption>
+            </figure>
           </div>
         ) : (
-          <p className="muted">No imagery uploaded yet.</p>
+          <p className="muted">No logo uploaded yet.</p>
         )}
 
         <ImageUploadForm

@@ -1,20 +1,12 @@
 import { apiRequest } from './client'
 
-export interface ProjectImage {
-  id: number
-  url: string
-  altText?: string | null
-}
-
 export interface Project {
   id: number
   startDate: string
   endDate?: string | null
   title: string
   description: string
-  coverImageUrl?: string | null
-  coverImageAlt?: string | null
-  images?: ProjectImage[]
+  imageUrl?: string | null
 }
 
 export interface ProjectInput {
