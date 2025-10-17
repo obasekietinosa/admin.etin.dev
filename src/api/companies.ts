@@ -1,4 +1,5 @@
 import { apiRequest } from './client'
+import { uploadAsset } from './assets'
 
 export interface Company {
   id: number
@@ -58,24 +59,11 @@ export const deleteCompany = async (companyId: number): Promise<void> => {
   })
 }
 
-interface UploadCompanyImageInput {
-  file: File
-  altText?: string
-}
-
 export const uploadCompanyImage = async (
   companyId: number,
-  input: UploadCompanyImageInput,
+  input: { file: File; altText?: string },
 ): Promise<void> => {
-  const formData = new FormData()
-  formData.append('image', input.file)
+  const asset = await uploadAsset(input)
 
-  if (input.altText && input.altText.trim().length > 0) {
-    formData.append('altText', input.altText.trim())
-  }
-
-  await apiRequest(`/companies/${companyId}/images`, {
-    method: 'POST',
-    body: formData,
-  })
+  await updateCompany(companyId, { icon: asset.url })
 }

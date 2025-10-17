@@ -1,4 +1,5 @@
 import { apiRequest } from './client'
+import { uploadAsset } from './assets'
 
 export interface Project {
   id: number
@@ -14,6 +15,7 @@ export interface ProjectInput {
   endDate?: string
   title: string
   description: string
+  imageUrl?: string | null
 }
 
 interface ProjectsResponse {
@@ -43,9 +45,13 @@ export const createProject = async (input: ProjectInput): Promise<Project> => {
   return response.project
 }
 
+type ProjectUpdateInput = Partial<ProjectInput> & {
+  imageUrl?: string | null
+}
+
 export const updateProject = async (
   projectId: number,
-  input: Partial<ProjectInput>,
+  input: ProjectUpdateInput,
 ): Promise<Project> => {
   const response = await apiRequest<ProjectResponse>(`/projects/${projectId}`, {
     method: 'PUT',
@@ -61,24 +67,11 @@ export const deleteProject = async (projectId: number): Promise<void> => {
   })
 }
 
-interface UploadProjectImageInput {
-  file: File
-  altText?: string
-}
-
 export const uploadProjectImage = async (
   projectId: number,
-  input: UploadProjectImageInput,
+  input: { file: File; altText?: string },
 ): Promise<void> => {
-  const formData = new FormData()
-  formData.append('image', input.file)
+  const asset = await uploadAsset(input)
 
-  if (input.altText && input.altText.trim().length > 0) {
-    formData.append('altText', input.altText.trim())
-  }
-
-  await apiRequest(`/projects/${projectId}/images`, {
-    method: 'POST',
-    body: formData,
-  })
+  await updateProject(projectId, { imageUrl: asset.url })
 }
