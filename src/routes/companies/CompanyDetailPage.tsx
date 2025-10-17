@@ -1,7 +1,13 @@
+import { useEffect, useState } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
-import { deleteCompany, fetchCompany } from '../../api/companies'
+import {
+  deleteCompany,
+  fetchCompany,
+  uploadCompanyImage,
+} from '../../api/companies'
 import { ApiError } from '../../api/client'
+import ImageUploadForm from '../../components/ImageUploadForm'
 
 const CompanyDetailPage = () => {
   const { companyId } = useParams()
@@ -9,6 +15,42 @@ const CompanyDetailPage = () => {
   const queryClient = useQueryClient()
 
   const id = Number(companyId)
+
+  const [uploadFormKey, setUploadFormKey] = useState(0)
+  const [uploadFeedback, setUploadFeedback] = useState<string | null>(null)
+
+  const {
+    mutate: uploadImage,
+    isPending: isUploading,
+    error: uploadError,
+    reset: resetUploadError,
+  } = useMutation({
+    mutationFn: ({ file, altText }: { file: File; altText?: string }) =>
+      uploadCompanyImage(id, { file, altText }),
+    onMutate: () => {
+      setUploadFeedback(null)
+    },
+    onSuccess: async () => {
+      setUploadFeedback('Image uploaded successfully.')
+      setUploadFormKey((previous) => previous + 1)
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['company', id] }),
+        queryClient.invalidateQueries({ queryKey: ['companies'] }),
+      ])
+    },
+    onError: () => {
+      setUploadFeedback(null)
+    },
+  })
+
+  useEffect(() => {
+    if (!uploadFeedback) {
+      return
+    }
+
+    const timeout = window.setTimeout(() => setUploadFeedback(null), 5000)
+    return () => window.clearTimeout(timeout)
+  }, [uploadFeedback])
 
   const {
     data: company,
@@ -66,6 +108,42 @@ const CompanyDetailPage = () => {
     removeCompany(company.id)
   }
 
+  const logoUrl =
+    company.logoUrl ?? (company as { imageUrl?: string | null }).imageUrl ?? null
+  const logoAlt =
+    company.logoAlt ?? (company as { imageAlt?: string | null }).imageAlt ?? ''
+  const galleryImages = company.images ?? []
+
+  const displayImages: Array<{ key: string | number; url: string; altText: string }> =
+    galleryImages.length > 0
+      ? galleryImages.map((image) => ({
+          key: image.id,
+          url: image.url,
+          altText:
+            image.altText && image.altText.trim().length > 0
+              ? image.altText
+              : logoAlt || `Brand imagery for ${company.name}`,
+        }))
+      : logoUrl
+        ? [
+            {
+              key: 'logo',
+              url: logoUrl,
+              altText:
+                logoAlt && logoAlt.trim().length > 0
+                  ? logoAlt
+                  : `Logo for ${company.name}`,
+            },
+          ]
+        : []
+
+  const uploadErrorMessage =
+    uploadError instanceof ApiError
+      ? uploadError.message
+      : uploadError
+        ? 'Unable to upload the image. Please try again.'
+        : null
+
   return (
     <article className="card stack stack--large">
       <header className="cluster cluster--between">
@@ -93,6 +171,42 @@ const CompanyDetailPage = () => {
       <section>
         <h3 className="section-subtitle">Description</h3>
         <p>{company.description || 'No description provided yet.'}</p>
+      </section>
+      <section className="stack">
+        <h3 className="section-subtitle">Brand imagery</h3>
+        {displayImages.length > 0 ? (
+          <div className="media-grid">
+            {displayImages.map((image) => (
+              <figure key={image.key} className="media-grid__item">
+                <img src={image.url} alt={image.altText} className="media-grid__image" />
+                {image.altText && (
+                  <figcaption className="media-grid__caption">{image.altText}</figcaption>
+                )}
+              </figure>
+            ))}
+          </div>
+        ) : (
+          <p className="muted">No imagery uploaded yet.</p>
+        )}
+
+        <ImageUploadForm
+          key={uploadFormKey}
+          label="Upload a company image"
+          helperText="Square or landscape images work best for logos and brand art."
+          submitLabel="Upload image"
+          isSubmitting={isUploading}
+          onSubmit={({ file, altText }) => {
+            resetUploadError()
+            uploadImage({ file, altText })
+          }}
+          errorMessage={uploadErrorMessage}
+        />
+
+        {uploadFeedback && (
+          <div className="alert alert--success" role="status">
+            <p>{uploadFeedback}</p>
+          </div>
+        )}
       </section>
       <footer className="cluster">
         <Link to=".." className="button button--ghost">

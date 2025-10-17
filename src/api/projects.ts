@@ -1,11 +1,20 @@
 import { apiRequest } from './client'
 
+export interface ProjectImage {
+  id: number
+  url: string
+  altText?: string | null
+}
+
 export interface Project {
   id: number
   startDate: string
   endDate?: string | null
   title: string
   description: string
+  coverImageUrl?: string | null
+  coverImageAlt?: string | null
+  images?: ProjectImage[]
 }
 
 export interface ProjectInput {
@@ -57,5 +66,27 @@ export const updateProject = async (
 export const deleteProject = async (projectId: number): Promise<void> => {
   await apiRequest(`/projects/${projectId}`, {
     method: 'DELETE',
+  })
+}
+
+interface UploadProjectImageInput {
+  file: File
+  altText?: string
+}
+
+export const uploadProjectImage = async (
+  projectId: number,
+  input: UploadProjectImageInput,
+): Promise<void> => {
+  const formData = new FormData()
+  formData.append('image', input.file)
+
+  if (input.altText && input.altText.trim().length > 0) {
+    formData.append('altText', input.altText.trim())
+  }
+
+  await apiRequest(`/projects/${projectId}/images`, {
+    method: 'POST',
+    body: formData,
   })
 }

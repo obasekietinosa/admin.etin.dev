@@ -1,10 +1,19 @@
 import { apiRequest } from './client'
 
+export interface CompanyImage {
+  id: number
+  url: string
+  altText?: string | null
+}
+
 export interface Company {
   id: number
   name: string
   icon: string
   description: string
+  logoUrl?: string | null
+  logoAlt?: string | null
+  images?: CompanyImage[]
 }
 
 export interface CompanyInput {
@@ -55,5 +64,27 @@ export const updateCompany = async (
 export const deleteCompany = async (companyId: number): Promise<void> => {
   await apiRequest(`/companies/${companyId}`, {
     method: 'DELETE',
+  })
+}
+
+interface UploadCompanyImageInput {
+  file: File
+  altText?: string
+}
+
+export const uploadCompanyImage = async (
+  companyId: number,
+  input: UploadCompanyImageInput,
+): Promise<void> => {
+  const formData = new FormData()
+  formData.append('image', input.file)
+
+  if (input.altText && input.altText.trim().length > 0) {
+    formData.append('altText', input.altText.trim())
+  }
+
+  await apiRequest(`/companies/${companyId}/images`, {
+    method: 'POST',
+    body: formData,
   })
 }

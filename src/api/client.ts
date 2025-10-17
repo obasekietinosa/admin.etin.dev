@@ -17,11 +17,14 @@ const isJsonResponse = (response: Response) => {
   return contentType?.includes('application/json') ?? false
 }
 
+const isFormDataBody = (body: RequestInit['body']): body is FormData =>
+  typeof FormData !== 'undefined' && body instanceof FormData
+
 export async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<T> {
   const headers = new Headers(options.headers)
   headers.set('Accept', 'application/json')
 
-  if (options.body && !headers.has('Content-Type')) {
+  if (options.body && !headers.has('Content-Type') && !isFormDataBody(options.body)) {
     headers.set('Content-Type', 'application/json')
   }
 
