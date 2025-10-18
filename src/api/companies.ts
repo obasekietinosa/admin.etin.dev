@@ -1,9 +1,10 @@
 import { apiRequest } from './client'
+import { uploadAsset } from './assets'
 
 export interface Company {
   id: number
   name: string
-  icon: string
+  icon?: string | null
   description: string
 }
 
@@ -56,4 +57,13 @@ export const deleteCompany = async (companyId: number): Promise<void> => {
   await apiRequest(`/companies/${companyId}`, {
     method: 'DELETE',
   })
+}
+
+export const uploadCompanyImage = async (
+  companyId: number,
+  input: { file: File; altText?: string },
+): Promise<void> => {
+  const asset = await uploadAsset(input)
+
+  await updateCompany(companyId, { icon: asset.url })
 }

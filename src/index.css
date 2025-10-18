@@ -173,4 +173,20 @@
   .form__actions {
     @apply flex flex-wrap items-center gap-3;
   }
+
+  .media-grid {
+    @apply grid gap-4 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .media-grid__item {
+    @apply overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60 shadow-inner shadow-slate-950/40;
+  }
+
+  .media-grid__image {
+    @apply block h-full w-full object-cover;
+  }
+
+  .media-grid__caption {
+    @apply px-4 py-2 text-xs text-slate-300;
+  }
 }
