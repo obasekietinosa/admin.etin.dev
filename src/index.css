@@ -189,4 +189,20 @@
   .media-grid__caption {
     @apply px-4 py-2 text-xs text-slate-300;
   }
+
+  .company-icon {
+    @apply inline-block overflow-hidden rounded-xl border border-white/10 bg-slate-900/60 object-cover;
+  }
+
+  .company-icon--sm {
+    @apply h-8 w-8;
+  }
+
+  .company-icon--md {
+    @apply h-12 w-12;
+  }
+
+  .company-icon--lg {
+    @apply h-16 w-16;
+  }
 }
