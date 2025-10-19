@@ -7,26 +7,9 @@ import {
   uploadCompanyImage,
 } from '../../api/companies'
 import { ApiError } from '../../api/client'
+import CompanyIcon from '../../components/CompanyIcon'
 import ImageUploadForm from '../../components/ImageUploadForm'
-
-const isLikelyImageUrl = (value?: string | null) => {
-  if (!value) {
-    return false
-  }
-
-  const trimmed = value.trim()
-
-  if (trimmed.length === 0) {
-    return false
-  }
-
-  return (
-    /^https?:\/\//i.test(trimmed) ||
-    trimmed.startsWith('/') ||
-    trimmed.startsWith('data:') ||
-    trimmed.startsWith('blob:')
-  )
-}
+import { isLikelyImageUrl } from '../../utils/images'
 
 const CompanyDetailPage = () => {
   const { companyId } = useParams()
@@ -127,9 +110,7 @@ const CompanyDetailPage = () => {
     removeCompany(company.id)
   }
 
-  const iconValue = company.icon?.trim() ?? ''
-  const iconUrl = isLikelyImageUrl(iconValue) ? iconValue : null
-  const iconEmoji = iconUrl ? '' : iconValue
+  const iconUrl = isLikelyImageUrl(company.icon) ? company.icon.trim() : null
 
   const uploadErrorMessage =
     uploadError instanceof ApiError
@@ -143,9 +124,9 @@ const CompanyDetailPage = () => {
       <header className="cluster cluster--between">
         <div>
           <p className="muted">Company #{company.id}</p>
-          <h2 className="section-title">
-            {iconEmoji && <span aria-hidden="true">{iconEmoji} </span>}
-            {company.name}
+          <h2 className="section-title cluster">
+            <CompanyIcon icon={company.icon} name={company.name} size="md" />
+            <span>{company.name}</span>
           </h2>
         </div>
         <div className="cluster">

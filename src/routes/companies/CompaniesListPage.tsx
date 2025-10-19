@@ -6,6 +6,7 @@ import {
   fetchCompanies,
 } from '../../api/companies'
 import { ApiError } from '../../api/client'
+import CompanyIcon from '../../components/CompanyIcon'
 
 const CompaniesListPage = () => {
   const navigate = useNavigate()
@@ -103,7 +104,13 @@ const CompaniesListPage = () => {
                       {company.name}
                     </Link>
                   </th>
-                  <td>{company.icon}</td>
+                  <td>
+                    <CompanyIcon
+                      icon={company.icon}
+                      name={company.name}
+                      size="sm"
+                    />
+                  </td>
                   <td>{company.description}</td>
                   <td className="table__actions">
                     <div className="cluster">

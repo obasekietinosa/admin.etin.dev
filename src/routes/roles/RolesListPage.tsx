@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate } from 'react-router-dom'
 import { ApiError } from '../../api/client'
 import { Role, deleteRole, fetchRoles } from '../../api/roles'
+import CompanyIcon from '../../components/CompanyIcon'
 
 const isOngoing = (value: string) => !value || value.startsWith('0001-01-01')
 
@@ -138,10 +139,14 @@ const RolesListPage = () => {
                     )}
                   </th>
                   <td>
-                    {role.companyIcon && (
-                      <span aria-hidden="true">{role.companyIcon} </span>
-                    )}
-                    {role.company}
+                    <div className="cluster">
+                      <CompanyIcon
+                        icon={role.companyIcon}
+                        name={role.company}
+                        size="sm"
+                      />
+                      <span>{role.company}</span>
+                    </div>
                   </td>
                   <td>{formatTenure(role)}</td>
                   <td>
