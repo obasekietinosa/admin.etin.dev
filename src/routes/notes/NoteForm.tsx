@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react'
 import type { NoteInput } from '../../api/notes'
+import MarkdownEditor from '../../components/MarkdownEditor'
 
 export interface NoteFormInitialValues {
   title: string
@@ -78,11 +79,13 @@ const NoteForm = ({
     setValues(initialState)
   }, [initialState])
 
-  const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-  ) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
     setValues((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleBodyChange = (markdown: string) => {
+    setValues((prev) => ({ ...prev, body: markdown }))
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -175,15 +178,11 @@ const NoteForm = ({
         <label className="form__label" htmlFor="body">
           Body
         </label>
-        <textarea
+        <MarkdownEditor
           id="body"
-          name="body"
-          rows={12}
-          required
-          placeholder="Capture the full narrative of your thinking."
-          className="form__textarea"
           value={values.body}
-          onChange={handleChange}
+          onChange={handleBodyChange}
+          placeholder="Capture the full narrative of your thinking. Use Markdown shortcuts for formatting."
         />
       </div>
 
