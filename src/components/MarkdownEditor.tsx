@@ -22,6 +22,7 @@ import type { EditorState } from 'lexical'
 import { HeadingNode, QuoteNode } from '@lexical/rich-text'
 import { ListItemNode, ListNode } from '@lexical/list'
 import { LinkNode } from '@lexical/link'
+import { CodeNode } from '@lexical/code'
 
 interface MarkdownEditorProps {
   id: string
@@ -92,14 +93,14 @@ const MarkdownEditor = ({ id, value, onChange, placeholder }: MarkdownEditorProp
   const initialConfig = useMemo<InitialConfigType>(
     () => ({
       namespace: 'NoteMarkdownEditor',
-      onError(error) {
+      onError(error: Error) {
         throw error
       },
       theme: editorTheme,
       editorState() {
         $convertFromMarkdownString(initialMarkdown.current, TRANSFORMERS)
       },
-      nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode],
+      nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode, CodeNode],
     }),
     [],
   )
