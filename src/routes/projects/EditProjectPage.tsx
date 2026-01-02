@@ -8,6 +8,7 @@ import {
   fetchProject,
   updateProject,
 } from '../../api/projects'
+import { ItemNotesManager } from '../../components/ItemNotesManager'
 import ProjectForm, {
   ProjectFormInitialValues,
   ProjectSubmitValues,
@@ -147,6 +148,8 @@ const EditProjectPage = () => {
           </button>
         }
       />
+
+      <ItemNotesManager itemId={id} itemType="projects" />
     </article>
   )
 }
