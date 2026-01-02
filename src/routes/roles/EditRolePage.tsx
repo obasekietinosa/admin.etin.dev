@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { fetchCompanies } from '../../api/companies'
 import { ApiError } from '../../api/client'
 import { Role, RoleInput, fetchRole, updateRole } from '../../api/roles'
+import { ItemNotesManager } from '../../components/ItemNotesManager'
 import RoleForm, { RoleFormInitialValues } from './RoleForm'
 
 const toDateInputValue = (value: string) => {
@@ -161,6 +162,8 @@ const EditRolePage = () => {
           }
         />
       )}
+
+      <ItemNotesManager itemId={id} itemType="roles" />
     </article>
   )
 }
