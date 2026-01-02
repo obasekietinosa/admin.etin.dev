@@ -61,6 +61,10 @@ export async function apiRequest<T>(path: string, options: RequestInit = {}): Pr
 
     if (response.status === 401) {
       clearSession()
+
+      if (typeof window !== 'undefined' && window.location.pathname !== '/login') {
+        window.location.href = '/login'
+      }
     }
 
     throw new ApiError(response.status, message)
