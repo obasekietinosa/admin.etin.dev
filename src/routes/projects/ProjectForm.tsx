@@ -13,11 +13,14 @@ export interface ProjectFormInitialValues {
   description: string
   startDate: string
   endDate: string
+  imageUrl?: string | null
 }
+
+export type ProjectSubmitValues = ProjectInput & { imageFile?: File }
 
 interface ProjectFormProps {
   initialValues?: ProjectFormInitialValues
-  onSubmit: (values: ProjectInput) => void
+  onSubmit: (values: ProjectSubmitValues) => void
   isSubmitting: boolean
   submitLabel: string
   secondaryAction?: ReactNode
@@ -28,6 +31,9 @@ interface ProjectFormState {
   description: string
   startDate: string
   endDate: string
+  imageUrl?: string | null
+  imageFile?: File
+  imagePreview?: string
 }
 
 const emptyValues: ProjectFormState = {
@@ -35,6 +41,9 @@ const emptyValues: ProjectFormState = {
   description: '',
   startDate: '',
   endDate: '',
+  imageUrl: null,
+  imageFile: undefined,
+  imagePreview: undefined,
 }
 
 const ProjectForm = ({
@@ -54,6 +63,7 @@ const ProjectForm = ({
       description: initialValues.description,
       startDate: initialValues.startDate,
       endDate: initialValues.endDate,
+      imageUrl: initialValues.imageUrl,
     }
   }, [initialValues])
 
@@ -69,6 +79,17 @@ const ProjectForm = ({
   ) => {
     const { name, value } = event.target
     setValues((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      setValues((prev) => ({
+        ...prev,
+        imageFile: file,
+        imagePreview: URL.createObjectURL(file),
+      }))
+    }
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -107,10 +128,12 @@ const ProjectForm = ({
       return
     }
 
-    const payload: ProjectInput = {
+    const payload: ProjectSubmitValues = {
       title: values.title.trim(),
       description: values.description.trim(),
       startDate: start.toISOString(),
+      imageUrl: values.imageUrl,
+      imageFile: values.imageFile,
     }
 
     if (end) {
@@ -123,6 +146,38 @@ const ProjectForm = ({
 
   return (
     <form className="form" onSubmit={handleSubmit} noValidate>
+      <div className="form__field">
+        <label className="form__label" htmlFor="image">
+          Project Image
+        </label>
+        {values.imageUrl && !values.imagePreview && (
+          <div className="form__image-preview">
+            <img
+              src={values.imageUrl}
+              alt="Current project"
+              style={{ maxWidth: '200px', marginBottom: '1rem' }}
+            />
+          </div>
+        )}
+        {values.imagePreview && (
+          <div className="form__image-preview">
+            <img
+              src={values.imagePreview}
+              alt="New project preview"
+              style={{ maxWidth: '200px', marginBottom: '1rem' }}
+            />
+          </div>
+        )}
+        <input
+          id="image"
+          name="image"
+          type="file"
+          accept="image/*"
+          className="form__input"
+          onChange={handleFileChange}
+        />
+        <p className="form__helper">Upload a cover image for the project.</p>
+      </div>
       <div className="form__grid">
         <div className="form__field">
           <label className="form__label" htmlFor="title">

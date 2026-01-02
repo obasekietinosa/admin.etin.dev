@@ -1,9 +1,17 @@
 import { useMemo } from 'react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { uploadAsset } from '../../api/assets'
 import { ApiError } from '../../api/client'
-import { Project, ProjectInput, fetchProject, updateProject } from '../../api/projects'
-import ProjectForm, { ProjectFormInitialValues } from './ProjectForm'
+import {
+  Project,
+  fetchProject,
+  updateProject,
+} from '../../api/projects'
+import ProjectForm, {
+  ProjectFormInitialValues,
+  ProjectSubmitValues,
+} from './ProjectForm'
 
 const toDateInputValue = (value?: string | null) => {
   if (!value) {
@@ -51,6 +59,7 @@ const EditProjectPage = () => {
       description: project.description,
       startDate: toDateInputValue(project.startDate),
       endDate: toDateInputValue(project.endDate),
+      imageUrl: project.imageUrl,
     }
   }, [project])
 
@@ -59,7 +68,18 @@ const EditProjectPage = () => {
     isPending: isSaving,
     error: updateError,
   } = useMutation({
-    mutationFn: (values: ProjectInput) => updateProject(id, values),
+    mutationFn: async (values: ProjectSubmitValues) => {
+      const { imageFile, ...projectInput } = values
+
+      let imageUrl = projectInput.imageUrl
+
+      if (imageFile) {
+        const asset = await uploadAsset({ file: imageFile })
+        imageUrl = asset.url
+      }
+
+      return updateProject(id, { ...projectInput, imageUrl })
+    },
     onSuccess: async (updatedProject: Project) => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['projects'] }),

@@ -1,8 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useNavigate } from 'react-router-dom'
+import { uploadAsset } from '../../api/assets'
 import { ApiError } from '../../api/client'
-import { Project, ProjectInput, createProject } from '../../api/projects'
-import ProjectForm from './ProjectForm'
+import { Project, createProject } from '../../api/projects'
+import ProjectForm, { ProjectSubmitValues } from './ProjectForm'
 
 const CreateProjectPage = () => {
   const navigate = useNavigate()
@@ -13,7 +14,18 @@ const CreateProjectPage = () => {
     isPending: isSaving,
     error,
   } = useMutation({
-    mutationFn: (values: ProjectInput) => createProject(values),
+    mutationFn: async (values: ProjectSubmitValues) => {
+      const { imageFile, ...projectInput } = values
+
+      let imageUrl = projectInput.imageUrl
+
+      if (imageFile) {
+        const asset = await uploadAsset({ file: imageFile })
+        imageUrl = asset.url
+      }
+
+      return createProject({ ...projectInput, imageUrl })
+    },
     onSuccess: async (project: Project) => {
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: ['projects'] }),
