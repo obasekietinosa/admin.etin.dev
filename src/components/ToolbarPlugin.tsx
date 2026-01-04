@@ -3,7 +3,6 @@ import {
   $getSelection,
   $isRangeSelection,
   FORMAT_TEXT_COMMAND,
-  FORMAT_ELEMENT_COMMAND,
   TextFormatType,
 } from 'lexical'
 import { useCallback, useEffect, useState } from 'react'
