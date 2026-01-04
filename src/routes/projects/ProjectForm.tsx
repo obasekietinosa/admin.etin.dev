@@ -7,6 +7,7 @@ import {
   useState,
 } from 'react'
 import type { ProjectInput } from '../../api/projects'
+import MarkdownEditor from '../../components/MarkdownEditor'
 
 export interface ProjectFormInitialValues {
   title: string
@@ -75,10 +76,14 @@ const ProjectForm = ({
   }, [initialState])
 
   const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+    event: ChangeEvent<HTMLInputElement>,
   ) => {
     const { name, value } = event.target
     setValues((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleDescriptionChange = (value: string) => {
+    setValues((prev) => ({ ...prev, description: value }))
   }
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -230,15 +235,11 @@ const ProjectForm = ({
         <label className="form__label" htmlFor="description">
           Description
         </label>
-        <textarea
+        <MarkdownEditor
           id="description"
-          name="description"
-          rows={6}
-          required
-          placeholder="Summarize the problem, process, and measurable impact."
-          className="form__textarea"
           value={values.description}
-          onChange={handleChange}
+          onChange={handleDescriptionChange}
+          placeholder="Summarize the problem, process, and measurable impact."
         />
       </div>
 

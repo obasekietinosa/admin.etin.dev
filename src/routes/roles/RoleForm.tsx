@@ -8,6 +8,7 @@ import {
 } from 'react'
 import type { Company } from '../../api/companies'
 import type { RoleInput } from '../../api/roles'
+import MarkdownEditor from '../../components/MarkdownEditor'
 
 export interface RoleFormInitialValues {
   title: string
@@ -84,6 +85,10 @@ const RoleForm = ({
   ) => {
     const { name, value } = event.target
     setValues((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleDescriptionChange = (value: string) => {
+    setValues((prev) => ({ ...prev, description: value }))
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -243,14 +248,11 @@ const RoleForm = ({
         <label className="form__label" htmlFor="description">
           Description
         </label>
-        <textarea
+        <MarkdownEditor
           id="description"
-          name="description"
-          rows={6}
-          placeholder="Summarize responsibilities using Markdown."
-          className="form__textarea"
           value={values.description}
-          onChange={handleChange}
+          onChange={handleDescriptionChange}
+          placeholder="Summarize responsibilities using Markdown."
         />
       </div>
 

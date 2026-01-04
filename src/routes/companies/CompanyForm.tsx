@@ -1,5 +1,6 @@
 import { ChangeEvent, FormEvent, ReactNode, useEffect, useState } from 'react'
 import type { CompanyInput } from '../../api/companies'
+import MarkdownEditor from '../../components/MarkdownEditor'
 
 export interface CompanyFormValues extends CompanyInput {}
 
@@ -33,9 +34,13 @@ const CompanyForm = ({
     }
   }, [initialValues])
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
     setValues((prev) => ({ ...prev, [name]: value }))
+  }
+
+  const handleDescriptionChange = (value: string) => {
+    setValues((prev) => ({ ...prev, description: value }))
   }
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -91,14 +96,11 @@ const CompanyForm = ({
         <label className="form__label" htmlFor="description">
           Description
         </label>
-        <textarea
+        <MarkdownEditor
           id="description"
-          name="description"
-          rows={4}
-          placeholder="What does this company do?"
-          className="form__textarea"
           value={values.description}
-          onChange={handleChange}
+          onChange={handleDescriptionChange}
+          placeholder="What does this company do?"
         />
       </div>
       {error && (
