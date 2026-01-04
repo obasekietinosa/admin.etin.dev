@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import MarkdownEditor from './MarkdownEditor'
 import {
   ItemType,
   fetchItemNotes,
@@ -220,12 +221,11 @@ export const ItemNotesManager: React.FC<ItemNotesManagerProps> = ({
               onChange={(e) => setNewNoteTitle(e.target.value)}
               required
             />
-            <textarea
-              placeholder="Note Body (Markdown)"
-              className="w-full border p-2 rounded h-24"
+            <MarkdownEditor
+              id="new-note-body"
               value={newNoteBody}
-              onChange={(e) => setNewNoteBody(e.target.value)}
-              required
+              onChange={setNewNoteBody}
+              placeholder="Note Body (Markdown)"
             />
             <div className="flex gap-2 justify-end">
               <button

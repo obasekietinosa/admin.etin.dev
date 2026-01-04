@@ -23,6 +23,7 @@ import { HeadingNode, QuoteNode } from '@lexical/rich-text'
 import { ListItemNode, ListNode } from '@lexical/list'
 import { LinkNode } from '@lexical/link'
 import { CodeNode } from '@lexical/code'
+import ToolbarPlugin from './ToolbarPlugin'
 
 interface MarkdownEditorProps {
   id: string
@@ -119,6 +120,7 @@ const MarkdownEditor = ({ id, value, onChange, placeholder }: MarkdownEditorProp
     <div className="markdown-editor">
       <LexicalComposer initialConfig={initialConfig}>
         <div className="markdown-editor__container">
+          <ToolbarPlugin />
           <RichTextPlugin
             contentEditable={
               <ContentEditable id={id} className="markdown-editor__content" />
