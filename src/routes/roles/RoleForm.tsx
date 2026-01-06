@@ -9,6 +9,8 @@ import {
 import type { Company } from '../../api/companies'
 import type { RoleInput } from '../../api/roles'
 import MarkdownEditor from '../../components/MarkdownEditor'
+import { useFormDrafts, Draft } from '../../hooks/useFormDrafts'
+import { DraftManager } from '../../components/DraftManager'
 
 export interface RoleFormInitialValues {
   title: string
@@ -75,6 +77,24 @@ const RoleForm = ({
 
   const [values, setValues] = useState<RoleFormState>(initialState)
   const [error, setError] = useState<string | null>(null)
+
+  const {
+    drafts,
+    currentDraftId,
+    lastSaved,
+    restoreDraft,
+    deleteDraft,
+    startNewDraft,
+    saveDraft,
+  } = useFormDrafts({
+    data: values,
+    getLabel: (data) => data.title || 'Untitled Role',
+  })
+
+  const handleRestore = (draft: Draft<RoleFormState>) => {
+    setValues(draft.data)
+    restoreDraft(draft)
+  }
 
   useEffect(() => {
     setValues(initialState)
@@ -156,6 +176,15 @@ const RoleForm = ({
 
   return (
     <form className="form" onSubmit={handleSubmit} noValidate>
+      <DraftManager
+        drafts={drafts}
+        currentDraftId={currentDraftId}
+        lastSaved={lastSaved}
+        onRestore={handleRestore}
+        onDelete={deleteDraft}
+        onStartNew={startNewDraft}
+        onSaveNow={saveDraft}
+      />
       <div className="form__grid">
         <div className="form__field">
           <label className="form__label" htmlFor="title">

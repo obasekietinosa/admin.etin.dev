@@ -1,6 +1,8 @@
 import { ChangeEvent, FormEvent, ReactNode, useEffect, useState } from 'react'
 import type { CompanyInput } from '../../api/companies'
 import MarkdownEditor from '../../components/MarkdownEditor'
+import { useFormDrafts, Draft } from '../../hooks/useFormDrafts'
+import { DraftManager } from '../../components/DraftManager'
 
 export interface CompanyFormValues extends CompanyInput {}
 
@@ -27,6 +29,24 @@ const CompanyForm = ({
 }: CompanyFormProps) => {
   const [values, setValues] = useState<CompanyFormValues>(initialValues ?? emptyValues)
   const [error, setError] = useState<string | null>(null)
+
+  const {
+    drafts,
+    currentDraftId,
+    lastSaved,
+    restoreDraft,
+    deleteDraft,
+    startNewDraft,
+    saveDraft,
+  } = useFormDrafts({
+    data: values,
+    getLabel: (data) => data.name || 'Untitled Company',
+  })
+
+  const handleRestore = (draft: Draft<CompanyFormValues>) => {
+    setValues(draft.data)
+    restoreDraft(draft)
+  }
 
   useEffect(() => {
     if (initialValues) {
@@ -59,6 +79,15 @@ const CompanyForm = ({
 
   return (
     <form className="form" onSubmit={handleSubmit} noValidate>
+      <DraftManager
+        drafts={drafts}
+        currentDraftId={currentDraftId}
+        lastSaved={lastSaved}
+        onRestore={handleRestore}
+        onDelete={deleteDraft}
+        onStartNew={startNewDraft}
+        onSaveNow={saveDraft}
+      />
       <div className="form__grid">
         <div className="form__field">
           <label className="form__label" htmlFor="name">

@@ -8,6 +8,8 @@ import {
 } from 'react'
 import type { NoteInput } from '../../api/notes'
 import MarkdownEditor from '../../components/MarkdownEditor'
+import { useFormDrafts, Draft } from '../../hooks/useFormDrafts'
+import { DraftManager } from '../../components/DraftManager'
 
 export interface NoteFormInitialValues {
   title: string
@@ -75,6 +77,25 @@ const NoteForm = ({
   const [values, setValues] = useState<NoteFormState>(initialState)
   const [error, setError] = useState<string | null>(null)
 
+  // Autosave integration
+  const {
+    drafts,
+    currentDraftId,
+    lastSaved,
+    restoreDraft,
+    deleteDraft,
+    startNewDraft,
+    saveDraft,
+  } = useFormDrafts({
+    data: values,
+    getLabel: (data) => data.title || 'Untitled Note',
+  })
+
+  const handleRestore = (draft: Draft<NoteFormState>) => {
+    setValues(draft.data)
+    restoreDraft(draft)
+  }
+
   useEffect(() => {
     setValues(initialState)
   }, [initialState])
@@ -124,6 +145,23 @@ const NoteForm = ({
 
   return (
     <form className="form" onSubmit={handleSubmit} noValidate>
+      <DraftManager
+        drafts={drafts}
+        currentDraftId={currentDraftId}
+        lastSaved={lastSaved}
+        onRestore={handleRestore}
+        onDelete={deleteDraft}
+        onStartNew={() => {
+          startNewDraft()
+          // If we are "starting new draft", should we clear values?
+          // If we are in "Create" mode, yes.
+          // If we are in "Edit" mode, maybe not?
+          // For now, let's assume "New Draft" means clear current edits
+          // but keep the initial state? Or just unlink from the current draft ID.
+          // Let's just unlink.
+        }}
+        onSaveNow={saveDraft}
+      />
       <div className="form__grid">
         <div className="form__field">
           <label className="form__label" htmlFor="title">
