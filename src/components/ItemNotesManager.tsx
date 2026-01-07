@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import MarkdownEditor from './MarkdownEditor'
+import { useFormDrafts, Draft } from '../hooks/useFormDrafts'
+import { DraftManager } from '../components/DraftManager'
 import {
   ItemType,
   fetchItemNotes,
@@ -32,6 +34,27 @@ export const ItemNotesManager: React.FC<ItemNotesManagerProps> = ({
   const [isCreating, setIsCreating] = useState(false)
   const [newNoteTitle, setNewNoteTitle] = useState('')
   const [newNoteBody, setNewNoteBody] = useState('')
+
+  const {
+    drafts,
+    currentDraftId,
+    lastSaved,
+    restoreDraft,
+    deleteDraft,
+    startNewDraft,
+    saveDraft,
+  } = useFormDrafts({
+    key: `item-note-${itemType}-${itemId}`,
+    data: { title: newNoteTitle, body: newNoteBody },
+    getLabel: (data) => data.title || 'Untitled Item Note',
+  })
+
+  const handleRestore = (draft: Draft<{ title: string; body: string }>) => {
+    setNewNoteTitle(draft.data.title)
+    setNewNoteBody(draft.data.body)
+    setIsCreating(true)
+    restoreDraft(draft)
+  }
 
   const loadData = async () => {
     setIsLoading(true)
@@ -205,14 +228,45 @@ export const ItemNotesManager: React.FC<ItemNotesManagerProps> = ({
         <div className="text-center my-2 text-gray-500">- OR -</div>
 
         {!isCreating ? (
-          <button
-            onClick={() => setIsCreating(true)}
-            className="w-full border-2 border-dashed border-gray-300 p-2 text-gray-600 hover:border-gray-400 rounded"
-          >
-            Create New Note
-          </button>
+          <>
+            {drafts.length > 0 && (
+              <DraftManager
+                drafts={drafts}
+                currentDraftId={currentDraftId}
+                lastSaved={lastSaved}
+                onRestore={handleRestore}
+                onDelete={deleteDraft}
+                onStartNew={() => {
+                  startNewDraft()
+                  setIsCreating(true)
+                  setNewNoteTitle('')
+                  setNewNoteBody('')
+                }}
+                onSaveNow={saveDraft}
+              />
+            )}
+            <button
+              onClick={() => setIsCreating(true)}
+              className="w-full border-2 border-dashed border-gray-300 p-2 text-gray-600 hover:border-gray-400 rounded"
+            >
+              Create New Note
+            </button>
+          </>
         ) : (
           <form onSubmit={handleCreateAndAttachNote} className="space-y-3 mt-4">
+            <DraftManager
+              drafts={drafts}
+              currentDraftId={currentDraftId}
+              lastSaved={lastSaved}
+              onRestore={handleRestore}
+              onDelete={deleteDraft}
+              onStartNew={() => {
+                startNewDraft()
+                setNewNoteTitle('')
+                setNewNoteBody('')
+              }}
+              onSaveNow={saveDraft}
+            />
             <input
               type="text"
               placeholder="Note Title"
