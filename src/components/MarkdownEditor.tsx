@@ -24,6 +24,7 @@ import { ListItemNode, ListNode } from '@lexical/list'
 import { LinkNode } from '@lexical/link'
 import { CodeNode } from '@lexical/code'
 import ToolbarPlugin from './ToolbarPlugin'
+import AutoLinkOnPastePlugin from './AutoLinkOnPastePlugin'
 
 interface MarkdownEditorProps {
   id: string
@@ -131,6 +132,7 @@ const MarkdownEditor = ({ id, value, onChange, placeholder }: MarkdownEditorProp
           <HistoryPlugin />
           <ListPlugin />
           <LinkPlugin />
+          <AutoLinkOnPastePlugin />
           <AutoFocusPlugin />
           <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
           <OnChangePlugin onChange={handleChange} />
