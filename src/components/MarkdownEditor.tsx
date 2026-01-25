@@ -32,7 +32,7 @@ interface MarkdownEditorProps {
   placeholder?: string
 }
 
-const editorTheme = {
+export const editorTheme = {
   paragraph: 'markdown-editor__paragraph',
   heading: {
     h1: 'markdown-editor__heading markdown-editor__heading--h1',

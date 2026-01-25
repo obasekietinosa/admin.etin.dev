@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ApiError } from '../../api/client'
 import { deleteNote, fetchNote } from '../../api/notes'
+import { MarkdownRenderer } from '../../components/MarkdownRenderer'
 
 const formatPublishedAt = (value: string | null) => {
   if (!value) {
@@ -117,9 +118,13 @@ const NoteDetailPage = () => {
 
       <section>
         <h3 className="section-subtitle">Body</h3>
-        <div className="whitespace-pre-wrap text-sm leading-relaxed text-slate-200">
-          {note.body || 'No body content yet.'}
-        </div>
+        {note.body ? (
+          <MarkdownRenderer>{note.body}</MarkdownRenderer>
+        ) : (
+          <div className="whitespace-pre-wrap text-sm leading-relaxed text-slate-200">
+            No body content yet.
+          </div>
+        )}
       </section>
 
       <footer className="cluster">
