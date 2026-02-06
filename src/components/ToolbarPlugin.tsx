@@ -5,7 +5,7 @@ import {
   FORMAT_TEXT_COMMAND,
   TextFormatType,
 } from 'lexical'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   Bold,
   Italic,
@@ -19,6 +19,7 @@ import {
   List,
   ListOrdered,
   Link as LinkIcon,
+  Image as ImageIcon,
 } from 'lucide-react'
 import {
   $createHeadingNode,
@@ -31,9 +32,12 @@ import {
 } from '@lexical/list'
 import { $setBlocksType } from '@lexical/selection'
 import { TOGGLE_LINK_COMMAND } from '@lexical/link'
+import { uploadAsset } from '../api/assets'
+import { $createImageNode } from './nodes/ImageNode'
 
 const ToolbarPlugin = () => {
   const [editor] = useLexicalComposerContext()
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [isBold, setIsBold] = useState(false)
   const [isItalic, setIsItalic] = useState(false)
   const [isUnderline, setIsUnderline] = useState(false)
@@ -83,6 +87,32 @@ const ToolbarPlugin = () => {
 
   const insertLink = () => {
       editor.dispatchCommand(TOGGLE_LINK_COMMAND, 'https://')
+  }
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    try {
+      const asset = await uploadAsset({ file })
+      editor.update(() => {
+        const selection = $getSelection()
+        if ($isRangeSelection(selection)) {
+          const imageNode = $createImageNode({
+            src: asset.url,
+            altText: file.name,
+          })
+          selection.insertNodes([imageNode])
+        }
+      })
+    } catch (e) {
+      console.error(e)
+      // TODO: Handle error nicely
+    } finally {
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    }
   }
 
   const ToolbarButton = ({
@@ -201,6 +231,20 @@ const ToolbarPlugin = () => {
       >
           <LinkIcon size={16} />
       </ToolbarButton>
+
+      <ToolbarButton
+        onClick={() => fileInputRef.current?.click()}
+        title="Insert Image"
+      >
+        <ImageIcon size={16} />
+      </ToolbarButton>
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleImageUpload}
+        style={{ display: 'none' }}
+        accept="image/*"
+      />
     </div>
   )
 }
