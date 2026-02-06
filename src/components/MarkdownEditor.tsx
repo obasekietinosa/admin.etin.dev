@@ -12,7 +12,6 @@ import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin'
 import { ListPlugin } from '@lexical/react/LexicalListPlugin'
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin'
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary'
-import { TRANSFORMERS } from '@lexical/markdown'
 import {
   $convertFromMarkdownString,
   $convertToMarkdownString,
@@ -25,6 +24,8 @@ import { LinkNode } from '@lexical/link'
 import { CodeNode } from '@lexical/code'
 import ToolbarPlugin from './ToolbarPlugin'
 import AutoLinkOnPastePlugin from './AutoLinkOnPastePlugin'
+import { EDITOR_TRANSFORMERS } from './markdownTransformers'
+import { ImageNode } from './nodes/ImageNode'
 
 interface MarkdownEditorProps {
   id: string
@@ -76,14 +77,14 @@ const MarkdownInitializer = ({ value }: { value: string }) => {
   useEffect(() => {
     const currentMarkdown = editor
       .getEditorState()
-      .read(() => $convertToMarkdownString(TRANSFORMERS))
+      .read(() => $convertToMarkdownString(EDITOR_TRANSFORMERS))
 
     if (currentMarkdown === value) {
       return
     }
 
     editor.update(() => {
-      $convertFromMarkdownString(value, TRANSFORMERS)
+      $convertFromMarkdownString(value, EDITOR_TRANSFORMERS)
     })
   }, [editor, value])
 
@@ -100,9 +101,17 @@ const MarkdownEditor = ({ id, value, onChange, placeholder }: MarkdownEditorProp
       },
       theme: editorTheme,
       editorState() {
-        $convertFromMarkdownString(initialMarkdown.current, TRANSFORMERS)
+        $convertFromMarkdownString(initialMarkdown.current, EDITOR_TRANSFORMERS)
       },
-      nodes: [HeadingNode, QuoteNode, ListNode, ListItemNode, LinkNode, CodeNode],
+      nodes: [
+        HeadingNode,
+        QuoteNode,
+        ListNode,
+        ListItemNode,
+        LinkNode,
+        CodeNode,
+        ImageNode,
+      ],
     }),
     [],
   )
@@ -110,7 +119,7 @@ const MarkdownEditor = ({ id, value, onChange, placeholder }: MarkdownEditorProp
   const handleChange = useCallback(
     (editorState: EditorState) => {
       editorState.read(() => {
-        const markdown = $convertToMarkdownString(TRANSFORMERS)
+        const markdown = $convertToMarkdownString(EDITOR_TRANSFORMERS)
         onChange(markdown)
       })
     },
@@ -134,7 +143,7 @@ const MarkdownEditor = ({ id, value, onChange, placeholder }: MarkdownEditorProp
           <LinkPlugin />
           <AutoLinkOnPastePlugin />
           <AutoFocusPlugin />
-          <MarkdownShortcutPlugin transformers={TRANSFORMERS} />
+          <MarkdownShortcutPlugin transformers={EDITOR_TRANSFORMERS} />
           <OnChangePlugin onChange={handleChange} />
           <MarkdownInitializer value={value} />
         </div>

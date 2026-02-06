@@ -8,7 +8,6 @@ import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin'
 import { ListPlugin } from '@lexical/react/LexicalListPlugin'
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin'
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary'
-import { TRANSFORMERS } from '@lexical/markdown'
 import {
   $convertFromMarkdownString,
   $convertToMarkdownString,
@@ -19,6 +18,8 @@ import { ListItemNode, ListNode } from '@lexical/list'
 import { LinkNode } from '@lexical/link'
 import { CodeNode } from '@lexical/code'
 import { editorTheme } from './MarkdownEditor'
+import { EDITOR_TRANSFORMERS } from './markdownTransformers'
+import { ImageNode } from './nodes/ImageNode'
 
 interface MarkdownRendererProps {
   children: string
@@ -30,14 +31,14 @@ const MarkdownInitializer = ({ value }: { value: string }) => {
   useEffect(() => {
     const currentMarkdown = editor
       .getEditorState()
-      .read(() => $convertToMarkdownString(TRANSFORMERS))
+      .read(() => $convertToMarkdownString(EDITOR_TRANSFORMERS))
 
     if (currentMarkdown === value) {
       return
     }
 
     editor.update(() => {
-      $convertFromMarkdownString(value, TRANSFORMERS)
+      $convertFromMarkdownString(value, EDITOR_TRANSFORMERS)
     })
   }, [editor, value])
 
@@ -55,7 +56,7 @@ export const MarkdownRenderer = ({ children }: MarkdownRendererProps) => {
       theme: editorTheme,
       editable: false,
       editorState() {
-        $convertFromMarkdownString(initialMarkdown.current, TRANSFORMERS)
+        $convertFromMarkdownString(initialMarkdown.current, EDITOR_TRANSFORMERS)
       },
       nodes: [
         HeadingNode,
@@ -64,6 +65,7 @@ export const MarkdownRenderer = ({ children }: MarkdownRendererProps) => {
         ListItemNode,
         LinkNode,
         CodeNode,
+        ImageNode,
       ],
     }),
     [],
