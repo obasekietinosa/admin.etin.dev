@@ -276,7 +276,7 @@
   }
 
   .markdown-editor__code {
-    @apply my-4 overflow-x-auto rounded-2xl bg-slate-900/80 p-4 font-mono text-sm text-slate-100;
+    @apply block whitespace-pre my-4 overflow-x-auto rounded-2xl bg-slate-900/80 p-4 font-mono text-sm text-slate-100;
   }
 
   .media-grid {
