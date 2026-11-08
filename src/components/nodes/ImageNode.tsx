@@ -66,7 +66,7 @@ export class ImageNode extends DecoratorNode<ReactNode> {
 
   static importDOM(): DOMConversionMap | null {
     return {
-      img: (_node: Node) => ({
+      img: () => ({
         conversion: convertImageElement,
         priority: 0,
       }),

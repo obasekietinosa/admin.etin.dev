@@ -45,17 +45,23 @@ const LoginPage = () => {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-950 px-4 py-10 sm:px-6">
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-slate-900/80 p-8 shadow-2xl shadow-slate-900/40">
-        <div className="mb-6 text-center">
-          <p className="text-sm font-semibold uppercase tracking-[0.3em] text-slate-400">admin.etin.dev</p>
-          <h1 className="mt-2 text-2xl font-semibold text-white">Administrator access</h1>
-          <p className="mt-2 text-sm text-slate-400">Sign in with your administrative credentials to continue.</p>
+    <div className="flex min-h-screen items-center justify-center px-4 py-8 sm:px-6">
+      <div className="card w-full max-w-md space-y-6 p-6 sm:p-8">
+        <div className="space-y-2 border-b border-border pb-5 text-center">
+          <p className="font-mono text-xs font-semibold uppercase tracking-[0.28em] text-bronze">
+            ◆ admin.etin.dev
+          </p>
+          <h1 className="font-display text-2xl font-semibold text-foreground sm:text-3xl">
+            Administrator access
+          </h1>
+          <p className="text-sm text-muted">
+            Sign in with your administrative credentials to continue.
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-slate-200">
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <div className="form__field">
+            <label htmlFor="email" className="form__label">
               Email address
             </label>
             <input
@@ -64,14 +70,14 @@ const LoginPage = () => {
               autoComplete="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              className="mt-1 w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-white outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/60"
-              placeholder="admin@example.com"
+              className="form__input"
+              placeholder="admin@etin.dev"
               required
             />
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-slate-200">
+          <div className="form__field">
+            <label htmlFor="password" className="form__label">
               Password
             </label>
             <input
@@ -80,14 +86,14 @@ const LoginPage = () => {
               autoComplete="current-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              className="mt-1 w-full rounded-lg border border-white/10 bg-slate-950/60 px-3 py-2 text-sm text-white outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/60"
+              className="form__input"
               placeholder="••••••••"
               required
             />
           </div>
 
           {formError && (
-            <p className="rounded-md border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-200" role="alert">
+            <p className="alert alert--error" role="alert">
               {formError}
             </p>
           )}
@@ -95,7 +101,7 @@ const LoginPage = () => {
           <button
             type="submit"
             disabled={mutation.isPending}
-            className="flex w-full items-center justify-center rounded-lg bg-gradient-to-r from-blue-600 to-violet-600 px-3 py-2 text-sm font-semibold text-white shadow-lg shadow-blue-500/40 transition hover:from-blue-500 hover:to-violet-500 disabled:cursor-not-allowed disabled:opacity-70"
+            className="button button--primary w-full"
           >
             {mutation.isPending ? 'Signing in…' : 'Sign in'}
           </button>

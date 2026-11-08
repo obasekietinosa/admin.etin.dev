@@ -9,7 +9,7 @@ export default function ImageComponent({
     <img
       src={src}
       alt={altText}
-      className="max-w-full h-auto rounded-lg my-4"
+      className="my-4 h-auto max-w-full rounded-sm border border-border"
     />
   )
 }

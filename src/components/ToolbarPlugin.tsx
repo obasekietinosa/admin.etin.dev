@@ -129,10 +129,10 @@ const ToolbarPlugin = () => {
     <button
       type="button"
       onClick={onClick}
-      className={`p-1.5 rounded transition-colors ${
+      className={`inline-flex min-h-[36px] min-w-[36px] shrink-0 items-center justify-center rounded-sm border p-2 transition-colors ${
         isActive
-          ? 'bg-blue-600/80 text-white'
-          : 'text-slate-400 hover:bg-white/10 hover:text-slate-200'
+          ? 'border-bronze bg-bronze/20 text-bronze-light'
+          : 'border-transparent text-muted hover:border-border hover:bg-surface hover:text-foreground'
       }`}
       title={title}
     >
@@ -140,10 +140,10 @@ const ToolbarPlugin = () => {
     </button>
   )
 
-  const Divider = () => <div className="w-px h-5 bg-white/10 mx-1" />
+  const Divider = () => <div className="mx-1 h-5 w-px shrink-0 bg-border" />
 
   return (
-    <div className="flex flex-wrap items-center gap-1 border-b border-white/10 bg-slate-900/50 p-2 mb-2 rounded-t-2xl">
+    <div className="mb-1 flex items-center gap-1 overflow-x-auto border-b border-border bg-surface/80 p-1.5 sm:flex-wrap sm:p-2">
       <ToolbarButton
         onClick={() => formatText('bold')}
         isActive={isBold}

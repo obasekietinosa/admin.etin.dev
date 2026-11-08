@@ -34,6 +34,7 @@ interface MarkdownEditorProps {
   placeholder?: string
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const editorTheme = {
   paragraph: 'markdown-editor__paragraph',
   heading: {

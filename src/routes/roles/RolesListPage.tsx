@@ -133,12 +133,12 @@ const RolesListPage = () => {
                       {role.title}
                     </Link>
                     {role.subtitle && (
-                      <p className="muted" aria-label="Role subtitle">
+                      <p className="muted mt-0.5 font-sans font-normal" aria-label="Role subtitle">
                         {role.subtitle}
                       </p>
                     )}
                   </th>
-                  <td>
+                  <td data-label="Company">
                     <div className="cluster">
                       <CompanyIcon
                         icon={role.companyIcon}
@@ -148,8 +148,10 @@ const RolesListPage = () => {
                       <span>{role.company}</span>
                     </div>
                   </td>
-                  <td>{formatTenure(role)}</td>
-                  <td>
+                  <td data-label="Duration" className="font-mono text-xs text-muted">
+                    {formatTenure(role)}
+                  </td>
+                  <td data-label="Skills" className="text-muted">
                     {role.skills.length > 0 ? role.skills.join(', ') : '—'}
                   </td>
                   <td className="table__actions">

@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ApiError } from '../../api/client'
 import { deleteRole, fetchRole } from '../../api/roles'
 import CompanyIcon from '../../components/CompanyIcon'
+import { MarkdownRenderer } from '../../components/MarkdownRenderer'
 
 const isOngoing = (value: string) => !value || value.startsWith('0001-01-01')
 
@@ -101,7 +102,7 @@ const RoleDetailPage = () => {
               </span>
             )}
           </h2>
-          <p className="cluster">
+          <p className="cluster mt-1">
             <CompanyIcon icon={role.companyIcon} name={role.company} size="sm" />
             <span>{role.company}</span>
           </p>
@@ -131,7 +132,11 @@ const RoleDetailPage = () => {
 
       <section>
         <h3 className="section-subtitle">Description</h3>
-        <p>{role.description || 'No description provided yet.'}</p>
+        {role.description ? (
+          <MarkdownRenderer>{role.description}</MarkdownRenderer>
+        ) : (
+          <p className="muted">No description provided yet.</p>
+        )}
       </section>
 
       <section>

@@ -105,9 +105,17 @@ const TagsListPage = () => {
                       {tag.name}
                     </Link>
                   </th>
-                  <td>{tag.slug}</td>
-                  <td>{tag.icon ?? '—'}</td>
-                  <td>{tag.theme ?? '—'}</td>
+                  <td data-label="Slug">
+                    <code>{tag.slug}</code>
+                  </td>
+                  <td data-label="Icon">{tag.icon ?? '—'}</td>
+                  <td data-label="Theme">
+                    {tag.theme ? (
+                      <span className="badge badge--patina">{tag.theme}</span>
+                    ) : (
+                      '—'
+                    )}
+                  </td>
                   <td className="table__actions">
                     <div className="cluster">
                       <Link to={`${tag.id}`} className="button button--ghost">
