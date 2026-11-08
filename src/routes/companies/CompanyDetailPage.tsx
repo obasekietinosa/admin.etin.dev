@@ -9,6 +9,7 @@ import {
 import { ApiError } from '../../api/client'
 import CompanyIcon from '../../components/CompanyIcon'
 import ImageUploadForm from '../../components/ImageUploadForm'
+import { MarkdownRenderer } from '../../components/MarkdownRenderer'
 import { isLikelyImageUrl } from '../../utils/images'
 
 const CompanyDetailPage = () => {
@@ -145,7 +146,11 @@ const CompanyDetailPage = () => {
       </header>
       <section>
         <h3 className="section-subtitle">Description</h3>
-        <p>{company.description || 'No description provided yet.'}</p>
+        {company.description ? (
+          <MarkdownRenderer>{company.description}</MarkdownRenderer>
+        ) : (
+          <p className="muted">No description provided yet.</p>
+        )}
       </section>
       <section className="stack">
         <h3 className="section-subtitle">Brand imagery</h3>

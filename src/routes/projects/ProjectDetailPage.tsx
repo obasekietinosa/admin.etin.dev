@@ -8,6 +8,7 @@ import {
   uploadProjectImage,
 } from '../../api/projects'
 import ImageUploadForm from '../../components/ImageUploadForm'
+import { MarkdownRenderer } from '../../components/MarkdownRenderer'
 
 const isOngoing = (value?: string | null) =>
   !value || value.startsWith('0001-01-01')
@@ -171,7 +172,11 @@ const ProjectDetailPage = () => {
 
       <section>
         <h3 className="section-subtitle">Description</h3>
-        <p>{project.description || 'No description provided yet.'}</p>
+        {project.description ? (
+          <MarkdownRenderer>{project.description}</MarkdownRenderer>
+        ) : (
+          <p className="muted">No description provided yet.</p>
+        )}
       </section>
 
       <section className="stack">

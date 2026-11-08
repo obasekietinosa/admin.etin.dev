@@ -161,7 +161,7 @@ export const ItemNotesManager: React.FC<ItemNotesManagerProps> = ({
     }
   }
 
-  if (isLoading) return <div>Loading notes...</div>
+  if (isLoading) return <p className="muted">Loading attached notes…</p>
 
   // Filter out already attached notes from available notes
   const attachableNotes = availableNotes.filter(
@@ -169,29 +169,39 @@ export const ItemNotesManager: React.FC<ItemNotesManagerProps> = ({
   )
 
   return (
-    <div className="mt-8 border-t pt-6">
-      <h3 className="text-lg font-semibold mb-4">Attached Notes</h3>
+    <div className="mt-8 space-y-6 border-t border-border pt-6">
+      <div>
+        <h3 className="section-subtitle">Attached Notes</h3>
+        <p className="muted">Link long-form notes or case study entries to this record.</p>
+      </div>
 
-      {error && <div className="text-red-500 mb-4">{error}</div>}
+      {error && (
+        <div className="alert alert--error" role="alert">
+          <p>{error}</p>
+        </div>
+      )}
 
-      <div className="space-y-4 mb-6">
+      <div className="space-y-3">
         {attachedNotes.length === 0 ? (
-          <p className="text-gray-500">No notes attached.</p>
+          <p className="muted">No notes attached yet.</p>
         ) : (
           attachedNotes.map((note) => (
             <div
               key={note.id}
-              className="border p-4 rounded flex justify-between items-start"
+              className="flex flex-col justify-between gap-3 rounded-sm border border-border bg-surface/60 p-4 sm:flex-row sm:items-center"
             >
-              <div>
-                <h4 className="font-medium">{note.title}</h4>
-                <p className="text-sm text-gray-600 truncate max-w-md">
+              <div className="min-w-0 space-y-1">
+                <h4 className="font-display text-base font-semibold text-foreground">
+                  {note.title}
+                </h4>
+                <p className="truncate text-sm text-muted">
                   {note.subtitle || note.body.substring(0, 100)}
                 </p>
               </div>
               <button
+                type="button"
                 onClick={() => handleDetachNote(note.id)}
-                className="text-red-600 hover:text-red-800 text-sm"
+                className="button button--danger self-start sm:self-auto"
               >
                 Detach
               </button>
@@ -200,16 +210,18 @@ export const ItemNotesManager: React.FC<ItemNotesManagerProps> = ({
         )}
       </div>
 
-      <div className="bg-gray-50 p-4 rounded">
-        <h4 className="font-medium mb-3">Add Note</h4>
+      <div className="space-y-4 rounded-sm border border-border bg-surface/40 p-4 sm:p-5">
+        <h4 className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-bronze-light">
+          Add Note
+        </h4>
 
-        <div className="flex gap-4 mb-4">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <select
-            className="border p-2 rounded flex-grow"
+            className="form__input flex-grow"
             value={selectedNoteId || ''}
             onChange={(e) => setSelectedNoteId(Number(e.target.value))}
           >
-            <option value="">Select an existing note...</option>
+            <option value="">Select an existing note…</option>
             {attachableNotes.map((note) => (
               <option key={note.id} value={note.id}>
                 {note.title}
@@ -217,18 +229,25 @@ export const ItemNotesManager: React.FC<ItemNotesManagerProps> = ({
             ))}
           </select>
           <button
+            type="button"
             onClick={handleAttachNote}
             disabled={!selectedNoteId}
-            className="bg-blue-600 text-white px-4 py-2 rounded disabled:opacity-50"
+            className="button button--secondary shrink-0"
           >
             Attach
           </button>
         </div>
 
-        <div className="text-center my-2 text-gray-500">- OR -</div>
+        <div className="flex items-center gap-3 py-1">
+          <div className="h-px flex-1 bg-border-inner" />
+          <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted">
+            or
+          </span>
+          <div className="h-px flex-1 bg-border-inner" />
+        </div>
 
         {!isCreating ? (
-          <>
+          <div className="space-y-3">
             {drafts.length > 0 && (
               <DraftManager
                 drafts={drafts}
@@ -246,14 +265,15 @@ export const ItemNotesManager: React.FC<ItemNotesManagerProps> = ({
               />
             )}
             <button
+              type="button"
               onClick={() => setIsCreating(true)}
-              className="w-full border-2 border-dashed border-gray-300 p-2 text-gray-600 hover:border-gray-400 rounded"
+              className="button button--secondary w-full border-dashed"
             >
-              Create New Note
+              + Create & Attach New Note
             </button>
-          </>
+          </div>
         ) : (
-          <form onSubmit={handleCreateAndAttachNote} className="space-y-3 mt-4">
+          <form onSubmit={handleCreateAndAttachNote} className="space-y-4 pt-2">
             <DraftManager
               drafts={drafts}
               currentDraftId={currentDraftId}
@@ -267,32 +287,40 @@ export const ItemNotesManager: React.FC<ItemNotesManagerProps> = ({
               }}
               onSaveNow={saveDraft}
             />
-            <input
-              type="text"
-              placeholder="Note Title"
-              className="w-full border p-2 rounded"
-              value={newNoteTitle}
-              onChange={(e) => setNewNoteTitle(e.target.value)}
-              required
-            />
-            <MarkdownEditor
-              id="new-note-body"
-              value={newNoteBody}
-              onChange={setNewNoteBody}
-              placeholder="Note Body (Markdown)"
-            />
-            <div className="flex gap-2 justify-end">
+            <div className="form__field">
+              <label className="form__label" htmlFor="new-note-title">
+                Note Title
+              </label>
+              <input
+                id="new-note-title"
+                type="text"
+                placeholder="Note Title"
+                className="form__input"
+                value={newNoteTitle}
+                onChange={(e) => setNewNoteTitle(e.target.value)}
+                required
+              />
+            </div>
+            <div className="form__field">
+              <label className="form__label" htmlFor="new-note-body">
+                Note Body
+              </label>
+              <MarkdownEditor
+                id="new-note-body"
+                value={newNoteBody}
+                onChange={setNewNoteBody}
+                placeholder="Note Body (Markdown)"
+              />
+            </div>
+            <div className="form__actions justify-end">
               <button
                 type="button"
                 onClick={() => setIsCreating(false)}
-                className="text-gray-600 px-3 py-1"
+                className="button button--ghost"
               >
                 Cancel
               </button>
-              <button
-                type="submit"
-                className="bg-green-600 text-white px-3 py-1 rounded"
-              >
+              <button type="submit" className="button button--primary">
                 Create & Attach
               </button>
             </div>

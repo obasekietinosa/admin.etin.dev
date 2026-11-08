@@ -38,32 +38,40 @@ export function DraftManager<T>({
   const activeDraft = drafts.find(d => d.id === currentDraftId)
 
   return (
-    <div className="flex items-center gap-4 text-sm mb-4 p-2 bg-gray-50 rounded border border-gray-200">
-      <div className="flex-1">
+    <div className="relative mb-4 flex flex-wrap items-center justify-between gap-3 rounded-sm border border-border bg-surface/80 px-3.5 py-2.5 text-xs">
+      <div className="flex items-center gap-2 font-mono text-muted">
+        <span
+          className={`h-2 w-2 rounded-full ${
+            lastSaved ? 'bg-patina-light' : 'bg-bronze/60'
+          }`}
+          aria-hidden="true"
+        />
         {lastSaved ? (
-          <span className="text-gray-600">Saved {formatDate(lastSaved)}</span>
+          <span>Saved {formatDate(lastSaved)}</span>
         ) : (
-          <span className="text-gray-400">Not saved yet</span>
+          <span>Not saved yet</span>
         )}
       </div>
 
-      <div className="relative flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <button
-           type="button"
-           onClick={onSaveNow}
-           className="text-xs text-gray-500 hover:text-gray-700 underline"
-           title="Force save draft"
+          type="button"
+          onClick={onSaveNow}
+          className="font-mono text-xs uppercase tracking-wider text-muted underline decoration-border underline-offset-4 transition hover:text-bronze-light"
+          title="Force save draft"
         >
           Save
         </button>
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-1"
+          className="inline-flex min-h-[34px] items-center gap-1.5 rounded-sm border border-border bg-card px-2.5 py-1 font-mono text-xs font-medium text-bronze-light transition hover:border-bronze"
         >
-          {activeDraft ? 'Current Draft' : 'Unsaved Draft'}
-          {drafts.length > 0 && ` (${drafts.length})`}
-          <span className="text-xs">▼</span>
+          <span>{activeDraft ? 'Current Draft' : 'Unsaved Draft'}</span>
+          {drafts.length > 0 && <span>({drafts.length})</span>}
+          <span className="text-[10px] text-bronze" aria-hidden="true">
+            ▼
+          </span>
         </button>
 
         {isOpen && (
@@ -72,29 +80,41 @@ export function DraftManager<T>({
               className="fixed inset-0 z-10"
               onClick={() => setIsOpen(false)}
             />
-            <div className="absolute right-0 top-full mt-1 w-72 bg-white border border-gray-200 shadow-lg rounded-md z-20 max-h-96 overflow-y-auto">
-              <div className="p-2 border-b border-gray-100 flex justify-between items-center sticky top-0 bg-white">
-                <span className="font-semibold text-gray-700">Drafts</span>
+            <div className="absolute right-0 top-full z-20 mt-1.5 max-h-80 w-full min-w-[16rem] max-w-xs overflow-y-auto rounded-sm border border-border bg-card shadow-soft-xl sm:w-80">
+              <div className="sticky top-0 flex items-center justify-between border-b border-border bg-card px-3 py-2.5">
+                <span className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-foreground">
+                  Saved Drafts
+                </span>
                 <button
                   type="button"
                   onClick={() => {
                     onStartNew()
                     setIsOpen(false)
                   }}
-                  className="text-xs bg-blue-50 text-blue-700 px-2 py-1 rounded hover:bg-blue-100"
+                  className="rounded-sm border border-bronze/50 bg-bronze/15 px-2.5 py-1 font-mono text-[11px] font-medium text-bronze-light transition hover:bg-bronze/25"
                 >
                   + New Draft
                 </button>
               </div>
 
               {drafts.length === 0 ? (
-                <div className="p-4 text-center text-gray-500">No saved drafts</div>
+                <div className="p-4 text-center text-xs text-muted">
+                  No saved drafts
+                </div>
               ) : (
-                <ul className="divide-y divide-gray-100">
+                <ul className="divide-y divide-border-inner">
                   {drafts.map((draft) => (
-                    <li key={draft.id} className={`p-2 hover:bg-gray-50 ${draft.id === currentDraftId ? 'bg-blue-50' : ''}`}>
-                      <div className="flex justify-between items-start mb-1">
-                        <span className="font-medium text-gray-800 truncate flex-1 mr-2" title={draft.label}>
+                    <li
+                      key={draft.id}
+                      className={`p-3 transition hover:bg-surface ${
+                        draft.id === currentDraftId ? 'bg-bronze/10' : ''
+                      }`}
+                    >
+                      <div className="mb-1.5 flex items-start justify-between gap-2">
+                        <span
+                          className="flex-1 truncate font-medium text-foreground"
+                          title={draft.label}
+                        >
                           {draft.label || 'Untitled'}
                         </span>
                         <button
@@ -103,30 +123,38 @@ export function DraftManager<T>({
                             e.stopPropagation()
                             onDelete(draft.id)
                           }}
-                          className="text-red-500 hover:text-red-700 text-xs"
+                          className="px-1 text-xs text-coral-light transition hover:text-coral"
                           title="Delete draft"
                         >
                           ✕
                         </button>
                       </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-xs text-gray-500">{formatDate(draft.timestamp)}</span>
+                      <div className="flex items-center justify-between">
+                        <span className="font-mono text-[11px] text-muted">
+                          {formatDate(draft.timestamp)}
+                        </span>
                         {draft.id !== currentDraftId && (
                           <button
                             type="button"
                             onClick={() => {
-                              if (confirm('Restore this draft? Current unsaved changes might be lost.')) {
+                              if (
+                                confirm(
+                                  'Restore this draft? Current unsaved changes might be lost.',
+                                )
+                              ) {
                                 onRestore(draft)
                                 setIsOpen(false)
                               }
                             }}
-                            className="text-xs text-blue-600 hover:underline"
+                            className="font-mono text-xs font-medium text-bronze-light hover:underline"
                           >
                             Restore
                           </button>
                         )}
                         {draft.id === currentDraftId && (
-                           <span className="text-xs text-blue-600 font-medium">Active</span>
+                          <span className="font-mono text-[11px] font-medium uppercase tracking-wider text-patina-light">
+                            Active
+                          </span>
                         )}
                       </div>
                     </li>

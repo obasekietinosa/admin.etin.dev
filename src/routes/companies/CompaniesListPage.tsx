@@ -51,8 +51,9 @@ const CompaniesListPage = () => {
         <div>
           <h2 className="section-title">Company directory</h2>
           <p className="muted">
-            {companies?.length ?? 0} company{companies && companies.length !== 1 ? 'ies' : ''}{' '}
-            managed through the API.
+            {companies?.length ?? 0}{' '}
+            {companies && companies.length === 1 ? 'company' : 'companies'} managed
+            through the API.
           </p>
         </div>
         <button
@@ -104,14 +105,16 @@ const CompaniesListPage = () => {
                       {company.name}
                     </Link>
                   </th>
-                  <td>
+                  <td data-label="Icon">
                     <CompanyIcon
                       icon={company.icon}
                       name={company.name}
                       size="sm"
                     />
                   </td>
-                  <td>{company.description}</td>
+                  <td data-label="Description" className="max-w-xs truncate text-muted">
+                    {company.description || '—'}
+                  </td>
                   <td className="table__actions">
                     <div className="cluster">
                       <Link to={`${company.id}`} className="button button--ghost">

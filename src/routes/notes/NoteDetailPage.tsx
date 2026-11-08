@@ -113,7 +113,13 @@ const NoteDetailPage = () => {
 
       <section>
         <h3 className="section-subtitle">Publication status</h3>
-        <p>{formatPublishedAt(note.publishedAt)}</p>
+        <span
+          className={`badge ${
+            note.publishedAt ? 'badge--patina' : 'badge--bronze'
+          }`}
+        >
+          {formatPublishedAt(note.publishedAt)}
+        </span>
       </section>
 
       <section>
@@ -121,7 +127,7 @@ const NoteDetailPage = () => {
         {note.body ? (
           <MarkdownRenderer>{note.body}</MarkdownRenderer>
         ) : (
-          <div className="whitespace-pre-wrap text-sm leading-relaxed text-slate-200">
+          <div className="whitespace-pre-wrap text-sm leading-relaxed text-muted">
             No body content yet.
           </div>
         )}

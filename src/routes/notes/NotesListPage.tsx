@@ -123,8 +123,16 @@ const NotesListPage = () => {
                       {note.title}
                     </Link>
                   </th>
-                  <td>{note.subtitle || '—'}</td>
-                  <td>{formatPublishedAt(note.publishedAt)}</td>
+                  <td data-label="Subtitle">{note.subtitle || '—'}</td>
+                  <td data-label="Published">
+                    <span
+                      className={`badge ${
+                        note.publishedAt ? 'badge--patina' : 'badge--bronze'
+                      }`}
+                    >
+                      {formatPublishedAt(note.publishedAt)}
+                    </span>
+                  </td>
                   <td className="table__actions">
                     <div className="cluster">
                       <Link to={`${note.id}`} className="button button--ghost">

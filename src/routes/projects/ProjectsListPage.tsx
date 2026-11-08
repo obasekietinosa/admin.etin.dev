@@ -130,9 +130,17 @@ const ProjectsListPage = () => {
                       {project.title}
                     </Link>
                   </th>
-                  <td>{formatDate(project.startDate)}</td>
-                  <td>{isOngoing(project.endDate) ? 'Present' : formatDate(project.endDate)}</td>
-                  <td>{project.description || 'No description yet.'}</td>
+                  <td data-label="Start">{formatDate(project.startDate)}</td>
+                  <td data-label="End">
+                    {isOngoing(project.endDate) ? (
+                      <span className="badge badge--patina">Present</span>
+                    ) : (
+                      formatDate(project.endDate)
+                    )}
+                  </td>
+                  <td data-label="Description" className="max-w-xs truncate text-muted">
+                    {project.description || 'No description yet.'}
+                  </td>
                   <td className="table__actions">
                     <div className="cluster">
                       <Link to={`${project.id}`} className="button button--ghost">
